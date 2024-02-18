@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+    --green-baize: linear-gradient(118deg, #057445 -3.52%, #008B51 46.48%, #004629 105.21%);
+    --blue-baize: linear-gradient(118deg, #053F74 -3.52%, #00488B 46.48%, #002446 105.21%);
+    font-family: "Roboto Slab", sans-serif
+}
