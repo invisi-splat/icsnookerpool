@@ -32,7 +32,7 @@
 </div>
 
 {#if showTitle}
-    <div class="z-0 hidden lg:block lg:absolute lg:bottom-0 lg:w-full">
+    <div class="z-0 hidden lg:block lg:absolute lg:bottom-0 lg:w-full overflow-hidden">
         <div class="lg:flex lg:flex-col lg:items-center lg:w-full">
             <svg transition:fly={{ duration: 1000, x: 50 }} class="lg:w-5/6 lg:absolute lg:bottom-10" width="1238" height="136" viewBox="0 0 1238 136" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect y="120.622" width="1217" height="14.8101" transform="rotate(-5.57332 0 120.622)" fill="#C8BF9E"/>
@@ -50,7 +50,7 @@
             </svg>
         </div>
     </div>
-    <div class="z-0 absolute top-48 w-full lg:hidden">
+    <div class="z-0 absolute top-48 w-full lg:hidden overflow-hidden">
         <div class="flex justify-between w-full px-6">
             <svg transition:fly={{ duration: 1000, x: -100 }} width="81" height="778" viewBox="0 0 81 778" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="65.2542" y="846.318" width="830.63" height="14.8101" transform="rotate(-94.4149 65.2542 846.318)" fill="#C8BF9E"/>
