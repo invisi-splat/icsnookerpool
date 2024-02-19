@@ -7,3 +7,20 @@
     --blue-baize: linear-gradient(118deg, #053F74 -3.52%, #00488B 46.48%, #002446 105.21%);
     font-family: "Roboto Slab", sans-serif
 }
+
+html {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+body {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+@font-face {
+    font-family: "Alsina";
+    font-style: normal;
+    font-weight: 400;
+    src: url("/fonts/Alsina_Ultrajada.ttf");
+}
