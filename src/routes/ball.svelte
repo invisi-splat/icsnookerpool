@@ -3,7 +3,7 @@
     export let ballInfo: BallInfo;
 </script>
 
-<a transition:fly={{ duration: 1000, delay: ballInfo.delay, y: 100 }}  class="my-5 transition-opacity ease-in-out flex flex-col items-center cursor-pointer hover:opacity-80 active:opacity-60" href={ballInfo.linkTo}>
+<a transition:fly={{ duration: 1000, delay: ballInfo.delay, y: 100 }}  class="my-5 transition-opacity ease-in-out flex flex-col items-center cursor-pointer lg:hover:opacity-80 active:opacity-80 lg:active:opacity-60" href={ballInfo.linkTo}>
     <div class="relative flex items-center justify-center w-36 h-36 mb-3 rounded-full {ballInfo.ballColor}">
         <div class="relative flex justify-center items-center text-6xl text-black font-bold font-ball left-1 w-24 h-24 rounded-full bg-almost-white">
             {ballInfo.symbol}
