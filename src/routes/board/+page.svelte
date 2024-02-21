@@ -5,7 +5,7 @@
 	export let data: PageData;
 </script>
 
-<Board breakInfo={data.breakInfo}></Board>
+<Board breakInfo={data.breakInfo} annualBreakInfo={data.annualBreakInfo}></Board>
 
 <style>
     :global(body) {
