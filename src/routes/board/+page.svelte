@@ -5,6 +5,10 @@
 	export let data: PageData;
 </script>
 
+<svelte:head>
+    <title>ICS&P High break board</title> 
+</svelte:head>
+
 <Board breakInfo={data.breakInfo} annualBreakInfo={data.annualBreakInfo}></Board>
 
 <style>

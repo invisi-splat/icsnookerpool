@@ -14,6 +14,10 @@
     })
 </script>
 
+<svelte:head>
+    <title>IC Snooker & Pool</title> 
+</svelte:head>
+
 <div class="relative h-dvh overflow-hidden">
     {#if !showTitle}
         <div class="fixed">

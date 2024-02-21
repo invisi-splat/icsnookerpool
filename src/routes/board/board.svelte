@@ -47,7 +47,7 @@
         </div>
     </div>
     <div class="middle-bracket fixed top-[70%] lg:top-[70%] w-screen h-3 mix-blend-darken"></div>
-    <div class="lg:w-60 lg:h-4/5 h-[30%] overflow-scroll">
+    <div class="lg:w-60 lg:h-1/5 h-[30%] overflow-scroll">
         <div class="bg-[url('/images/peg.png')] bg-[size:1%] bg-repeat min-h-[30%] w-full lg:w-60 p-3">
             <div class="mt-5 flex justify-evenly items-baseline">
                 <h1 class="text-2xl text-high-break-yellow">ANNUAL TOP THREE</h1>
@@ -60,7 +60,7 @@
                 <BreakList breakInfo={annualBreakInfo} showAll={showAll}></BreakList>
             </div>
         </div>
-    </div>    
+    </div>
 </div>
 
 <!-- frame -->
