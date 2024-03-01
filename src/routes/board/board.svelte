@@ -1,17 +1,7 @@
 <script lang="ts">
     import BoardText from "./boardText.svelte";
+  import BreakForm from "./breakForm.svelte";
     import BreakList from "./breakList.svelte";
-
-    type BreakInfo = {
-        uuid: string;
-        name: string;
-        break: number;
-        submitted: number;
-        table: number;
-        breakdown?: number[];
-        alumnus: boolean;
-        verified: boolean;
-    }[]
     
     export let breakInfo: BreakInfo;
     export let annualBreakInfo: BreakInfo;
@@ -32,9 +22,9 @@
                 </button>
                 <button type="button" class="text-[#879997] border-2 border-[#879997] py-1 px-3" on:click={() => showAll = !showAll}>
                     {#if showAll}
-                    <BoardText text="Hide unverified"></BoardText>
+                    <BoardText text="Hide all"></BoardText>
                     {:else}
-                    <BoardText text="Show unverified"></BoardText>
+                    <BoardText text="Show all"></BoardText>
                     {/if}
                 </button>
             </div>
@@ -44,6 +34,8 @@
                 </svg>
                 <BreakList breakInfo={breakInfo} showAll={showAll}></BreakList>
             </div>
+            <div class="pl-16 mt-16 lg:hidden"><BoardText text="Submit new break"></BoardText></div>
+            <div class="flex justify-center"><BreakForm></BreakForm></div>
         </div>
     </div>
     <div class="middle-bracket fixed top-[70%] lg:top-[70%] w-screen h-3 mix-blend-darken"></div>

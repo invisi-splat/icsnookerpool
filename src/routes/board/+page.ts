@@ -1,141 +1,40 @@
 import type { PageLoad } from './$types';
+import { supabase } from "$lib/supabaseClient";
 
-export const load: PageLoad = () => {
-	return {
-		breakInfo: [ // dummy data. replace this with a proper req to supabase
-            {
-                "uuid": "488d9073-0403-4b9b-8175-d5c1cfe49566",
-                "name": "Richard Stroud",
-                "break": 54,
-                "submitted": 1705099802000,
-                "table": 2,
-                "breakdown": [1, 5, 1, 6, 1, 7, 1, 5, 1, 4, 1, 7, 1, 7, 1, 7],
-                "alumnus": true,
-                "verified": true,
-                // implement reactions if really necessary; i think the whatsapp gc suffices
-            },
-            {
-                "uuid": "f1278b27-3c49-48ae-8496-0875426a17cf",
-                "name": "Rob Middleton",
-                "break": 43,
-                "submitted": 1705099802000,
-                "table": 1,
-                "breakdown": [1, 5, 1, 5, 1, 5, 1, 6, 1, 5, 1, 7, 1, 3],
-                "alumnus": false,
-                "verified": true,
-            },
-            {
-                "uuid": "f1278b27-3c49-48ae-8496-0875426a17cf",
-                "name": "Rob Middleton",
-                "break": 43,
-                "submitted": 1705099802000,
-                "table": 2,
-                "breakdown": [1, 5, 1, 5, 1, 5, 1, 6, 1, 5, 1, 7, 1, 3],
-                "alumnus": false,
-                "verified": true,
-            },
-            {
-                "uuid": "f1278b27-3c49-48ae-8496-0875426a17cf",
-                "name": "Rob Middleton",
-                "break": 43,
-                "submitted": 1705099802000,
-                "table": 1,
-                "breakdown": [1, 5, 1, 5, 1, 5, 1, 6, 1, 5, 1, 7, 1, 3],
-                "alumnus": false,
-                "verified": true,
-            },
-            {
-                "uuid": "488d9073-0403-4b9b-8175-d5c1cfe49566",
-                "name": "Richard Stroud",
-                "break": 42,
-                "submitted": 1705099802000,
-                "table": 2,
-                "breakdown": [1, 5, 1, 6, 1, 7, 1, 5, 1, 4, 1, 7, 1, 2],
-                "alumnus": true,
-                "verified": false,
-            },
-            {
-                "uuid": "488d9073-0403-4b9b-8175-d5c1cfe49566",
-                "name": "Richard Stroud",
-                "break": 41,
-                "submitted": 1705099802000,
-                "table": 1,
-                "breakdown": [1, 5, 1, 6, 1, 7, 1, 5, 1, 4, 1, 7, 1],
-                "alumnus": true,
-                "verified": true,
-            },
-            {
-                "uuid": "e21f8a6e-f25b-431f-b086-7caa825ebae2",
-                "name": "Bowen Zhu",
-                "break": 34,
-                "submitted": 1708353412000,
-                "table": 1,
-                "breakdown": [1, 7, 1, 7, 1, 6, 1, 6, 1, 2, 1],
-                "alumnus": false,
-                "verified": true,
-            },
-            {
-                "uuid": "71296fde-924d-45c9-9a59-19db8a19a2f5",
-                "name": "Om Goswamy",
-                "break": 34,
-                "submitted": 1708353412000,
-                "table": 1,
-                "breakdown": [1, 7, 1, 7, 1, 6, 1, 6, 1, 2, 1],
-                "alumnus": false,
-                "verified": true,
-            },
-            {
-                "uuid": "71296fde-924d-45c9-9a59-19db8a19a2f5",
-                "name": "Om Goswamy",
-                "break": 33,
-                "submitted": 1708353412000,
-                "table": 2,
-                "alumnus": false,
-                "verified": false,
-            },
-            {
-                "uuid": "599ed438-5a45-4495-b8a5-9000b9206df4",
-                "name": "Kasidit Lauhabutr",
-                "break": 32,
-                "submitted": 1708353412000,
-                "table": 1,
-                "breakdown": [1, 7, 1, 7, 1, 6, 1, 7, 1],
-                "alumnus": false,
-                "verified": true,
-            },
-        ],
-        annualBreakInfo: [ // similar
-            {
-                "uuid": "488d9073-0403-4b9b-8175-d5c1cfe49566",
-                "name": "Richard Stroud",
-                "break": 54,
-                "submitted": 1705099802000,
-                "table": 2,
-                "breakdown": [1, 5, 1, 6, 1, 7, 1, 5, 1, 4, 1, 7, 1, 7, 1, 7],
-                "alumnus": true,
-                "verified": true,
-                // implement reactions if really necessary; i think the whatsapp gc suffices
-            },
-            {
-                "uuid": "f1278b27-3c49-48ae-8496-0875426a17cf",
-                "name": "Rob Middleton",
-                "break": 43,
-                "submitted": 1705099802000,
-                "table": 1,
-                "breakdown": [1, 5, 1, 5, 1, 5, 1, 6, 1, 5, 1, 7, 1, 3],
-                "alumnus": false,
-                "verified": true,
-            },
-            {
-                "uuid": "f1278b27-3c49-48ae-8496-0875426a17cf",
-                "name": "Rob Middleton",
-                "break": 43,
-                "submitted": 1705099802000,
-                "table": 2,
-                "breakdown": [1, 5, 1, 5, 1, 5, 1, 6, 1, 5, 1, 7, 1, 3],
-                "alumnus": false,
-                "verified": true,
-            },
-        ]
-	};
+const startYear = 2023
+const nextYear = startYear + 1
+
+export const load: PageLoad = async () => {
+    const breakInfo = await supabase
+        .from("breaks")
+        .select(`
+            *,
+            player:users!player (*),
+            player_info:user_types!player (*),
+            opponent:users!opponent (*)
+        `)
+        .order("break", { ascending: false })
+    if (breakInfo.error) throw breakInfo.error;
+    const annualBreakInfo = await supabase
+        .from("breaks")
+        .select(`
+            *,
+            player:users!player (*),
+            player_info:user_types!player (*),
+            opponent:users!opponent (*)
+        `)
+        .gt("submitted", `${startYear}-09-01`)
+        .lt("submitted", `${nextYear}-09-01`)
+        .neq("verified", false)
+        .order("break", { ascending: false })
+        .range(0, 2)
+    if (annualBreakInfo.error) throw annualBreakInfo.error
+    const loadedData: {
+        breakInfo: BreakInfo,
+        annualBreakInfo: BreakInfo
+    } = {
+        breakInfo: breakInfo.data,
+        annualBreakInfo: annualBreakInfo.data
+	}
+	return loadedData;
 };

@@ -7,7 +7,8 @@ export default {
         "slab": ["'Roboto Slab'", "ui-sans-serif"],
         "serif": ["Roboto Serif", "ui-serif", "Georgia", "Cambria", "Times New Roman", "Times", "serif"],
         "ball": ["'M PLUS Rounded 1c'", "ui-sans-serif"],
-        "board": ["'Alsina'", "ui-sans-serif"]
+        "board": ["'Alsina'", "ui-sans-serif"],
+        "handwritten": ["'Rock Salt'", "ui-sans-serif"]
       },
       colors: {
         "almost-white": "#D9D9D9",
@@ -16,6 +17,7 @@ export default {
         "high-break-yellow": "#E3C93E",
         "new-break-blue": "#36FFF3",
         "unverified-grey": "#3E3E3E",
+        "not-best-grey": "#94B3A0",
         "red-ball": "#B80201",
         "yellow-ball": "#FDC311",
         "green-ball": "#066557",
