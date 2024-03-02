@@ -15,5 +15,6 @@
     :global(body) {
         background: var(--green-baize);
         color: white;
+        overscroll-behavior: none;
     }
 </style>

@@ -1,10 +1,10 @@
-import type { PageLoad } from './$types';
+import type { PageServerLoad } from './$types';
 import { supabase } from "$lib/supabaseClient";
 
 const startYear = 2023
 const nextYear = startYear + 1
 
-export const load: PageLoad = async () => {
+export const load: PageServerLoad = async () => {
     const breakInfo = await supabase
         .from("breaks")
         .select(`

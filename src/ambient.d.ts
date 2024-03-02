@@ -17,24 +17,20 @@ type BreakInfo = {
     location: string,
     balls_potted?: number[] | null,
     reactions?: number[] | null, // change this to an appropriate type
-    player: {
-        user_id: string,
-        last_name: string,
-        given_name: string,
-    },
-    opponent?: {
-        user_id: string,
-        last_name: string,
-        given_name: string
-    } | null,
-    player_info: {
-        type: string,
-        status: string,
-        user_id: string
-    },
-    opponent_info?: {
-        type: string,
-        status: string,
-        user_id: string
-    } | null,
+    player: User,
+    opponent?: User | null,
+    player_info: UserInfo,
+    opponent_info?: UserInfo | null,
 }[]
+
+type User = {
+    user_id: string,
+    last_name: string,
+    given_name: string,
+}
+
+type UserInfo = {
+    user_id: string,
+    status: "alumnus" | "student",
+    type: "admin" | "user"
+}

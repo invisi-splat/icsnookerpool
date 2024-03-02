@@ -9,7 +9,7 @@
     let showAll = false
 </script>
 
-<div class="h-dvh font-board bg-black">
+<div class="h-dvh touch-manipulation font-board bg-black">
     <div class="lg:w-60 lg:h-4/5 h-[70%] overflow-scroll">
         <div class="bg-[url('/images/peg.png')] bg-[size:1%] bg-repeat w-full min-h-[100%] p-3"> <!-- edit the min-h percentage to edit the buffer -->
             <div class="mt-5 flex justify-evenly items-baseline">
