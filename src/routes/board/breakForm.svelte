@@ -29,7 +29,7 @@
     let matchingUsers: User[] = []; 
     let confirmNewUser: boolean = false;
     
-    async function handleFormSubmit() {
+    async function handleFormSubmit() { // XXX THIS IS NOT SAFE! MOVE VALIDATION TO SERVER SIDE
         badSubmission = false;
         setTimeout(async () => {
             // validation
@@ -61,74 +61,51 @@
             lastName = lastName.charAt(0).toUpperCase() + lastName.slice(1);
 
             if (!selectedUserId) {
-                const findUserReq = await supabase
-                    .from("users")
-                    .select("*")
-                    .eq("given_name", givenName)
-                    .eq("last_name", lastName)
-                if (findUserReq.error) { throw findUserReq.error };
-                if (findUserReq.data.length > 0) {
-                    badSubmission = true;
-                    errorMessage = `${name} already exists in the database. Please try choosing this person from the drop-down menu.`
-                    return;
-                }
+                const response = await fetch('/api/board/new_user', {
+                    method: 'POST',
+                    body: JSON.stringify({ givenName, lastName }),
+                    headers: {
+                        'content-type': 'application/json',
+                    },
+                });
 
-                const addNewUser = await supabase
-                    .from("users")
-                    .insert([
-                        {
-                            given_name: givenName,
-                            last_name: lastName
-                        }
-                    ])
-                    .select("user_id")
-                if (addNewUser.error) {
+                const { success, code, user_id } = await response.json()
+                if (!success) {
                     badSubmission = true;
-                    errorMessage = "Something went wrong adding a user. Are you an imposter?";
-                    return;
-                }
-                const addNewUserInfo = await supabase
-                    .from("user_types")
-                    .insert([
-                        {
-                            user_id: addNewUser.data[0].user_id,
-                            status: "student",
-                            type: "user"
-                        }
-                    ])
-                if (addNewUserInfo.error) {
-                    badSubmission = true;
-                    errorMessage = "Something went wrong adding a user. Are you an imposter?";
-                    return;
-                }
-                selectedUserId = addNewUser.data[0].user_id;
-            }
-            const { data, error } = await supabase
-                .from("breaks")
-                .insert([
-                    {
-                        submitted: new Date().toISOString(),
-                        break: breakTotal,
-                        verified: false,
-                        is_best: false, // verify this in the admin panel
-                        location: location ? (locationPrefix === "table" ? "on Table" : "at") + " " + location : null,
-                        balls_potted: ballsPotted.length > 0 ? ballsPotted : null, 
-                        player: selectedUserId 
+                    switch (code) {
+                        case 1:
+                            errorMessage = `${name} already exists in the database. Please try choosing this person from the drop-down menu.`;
+                            break;
+                        case 2:
+                            errorMessage = "Something went wrong adding a user. Are you an imposter?";
+                            break;
                     }
-                ])
-                .select("id, break")
-            if (error) {
+                    return;
+                }
+                selectedUserId = user_id;
+            }
+            const response = await fetch('/api/board/new_break', {
+                method: 'POST',
+                body: JSON.stringify({ name, breakTotal, location, locationPrefix, ballsPotted, selectedUserId }),
+                headers: {
+                    'content-type': 'application/json',
+                },
+            });
+
+            const { code, message } = await response.json();
+
+            if (code) {
                 badSubmission = true;
-                errorMessage = "Something went wrong sending the break. That can't be good."
-                throw error
+                errorMessage = message;
             } else {
                 goodSubmission = true;
-                successMessage = `Successfully sent break of ${data[0].break} to be verified!`
+                successMessage = message;
             }
         }, 100) // delay to make the animation replay
     }
 
     async function handleQueryUsers() {
+        badSubmission = false;
         selectedUserId = "";
         confirmNewUser = false;
         const [firstName, lastName] = name.split(" ");
@@ -141,7 +118,11 @@
             .ilike("given_name", `%${firstName}%`)
             .ilike("last_name", `%${lastName ? lastName : ''}%`)
             .range(0, 2);
-        if (error) { throw error };
+        if (error) { 
+            badSubmission = true;
+            errorMessage = "Error thrown while querying users. Are you offline?"
+            throw error;
+        };
         matchingUsers = data;
     }
 </script>
