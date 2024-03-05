@@ -137,13 +137,13 @@
     }
 </script>
 
-<div class="my-3 w-5/6 bg-[#B1B1B1] rounded-md font-handwritten p-5">
+<div class="my-3 w-5/6 lg:max-h-full lg:overflow-y-scroll bg-[#B1B1B1] rounded-md font-handwritten p-5">
     <div class="grid grid-cols-8 gap-y-5 items-center">
         <div class="text-red-ball text-xl col-span-3">Name</div>
         <div class="col-span-5 relative">
             <input on:keydown={debounce(handleQueryUsers)} bind:value={name} type="text" class="w-full { selectedUserId ? 'text-gray-500' : 'text-black' } text-xl bg-[#B1B1B1] border-black border-b" />
             {#if matchingUsers.length > 0 && !selectedUserId}
-            <div class="absolute overflow-clip p-1 text-black bg-white opacity-80 text-sm w-full top-10 z-50">
+            <div class="absolute overflow-clip p-1 text-black bg-white opacity-80 text-sm w-full top-10 z-50 flex flex-col items-start">
                 {#each matchingUsers as matchingUser}
                     <button type="button" on:click={() => { selectedUserId = matchingUser.user_id; name = matchingUser.given_name + " " + matchingUser.last_name; confirmNewUser = false; }} class="active:bg-gray-400">
                         { matchingUser.given_name } { matchingUser.last_name }

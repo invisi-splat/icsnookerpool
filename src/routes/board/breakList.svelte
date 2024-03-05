@@ -6,7 +6,7 @@
     export let showAll: Boolean;
     export let breakInfo: BreakInfo;
 
-    const NEW_THRESHOLD: number = 1000 * 60 * 60 * 24
+    const NEW_THRESHOLD: number = 1000 * 60 * 60 * 36
     let showDetailedBreak: Boolean[] = []
 
     function getDate(sinceEpoch: number): string {
