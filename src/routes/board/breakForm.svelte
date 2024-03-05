@@ -86,7 +86,7 @@
             }
             const response = await fetch('/api/board/new_break', {
                 method: 'POST',
-                body: JSON.stringify({ name, breakTotal, location, locationPrefix, ballsPotted, selectedUserId }),
+                body: JSON.stringify({ name, breakTotal, location, locationPrefix, ballsPotted, userId: selectedUserId }),
                 headers: {
                     'content-type': 'application/json',
                 },
@@ -100,6 +100,7 @@
             } else {
                 goodSubmission = true;
                 successMessage = message;
+                resetForm();
             }
         }, 100) // delay to make the animation replay
     }
@@ -118,12 +119,21 @@
             .ilike("given_name", `%${firstName}%`)
             .ilike("last_name", `%${lastName ? lastName : ''}%`)
             .range(0, 2);
-        if (error) { 
+        if (error) {
             badSubmission = true;
             errorMessage = "Error thrown while querying users. Are you offline?"
             throw error;
         };
         matchingUsers = data;
+    }
+
+    function resetForm() {
+        name = "";
+        breakTotal = 0;
+        locationPrefix = "at";
+        location = "";
+        ballsPotted = [];
+        console.log("awudhjwua")
     }
 </script>
 

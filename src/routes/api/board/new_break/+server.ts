@@ -31,6 +31,7 @@ export const POST: RequestHandler = async ({ request }) => {
         ])
         .select("id, break")
     if (error) {
+        console.log(error)
         return json({ code: 1, message: "Something went wrong sending the break. That can't be good."});
     } else {
         return json({ code: 0, message: `Successfully sent break of ${data[0].break} to be verified!` });

@@ -1,6 +1,6 @@
 <script lang="ts">
     import BoardText from "./boardText.svelte";
-  import BreakForm from "./breakForm.svelte";
+    import BreakForm from "./breakForm.svelte";
     import BreakList from "./breakList.svelte";
     
     export let breakInfo: BreakInfo;
