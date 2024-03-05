@@ -9,8 +9,8 @@
     let showAll = false
 </script>
 
-<div class="h-dvh touch-manipulation font-board bg-black">
-    <div class="lg:w-60 lg:h-4/5 h-[70%] overflow-scroll">
+<div class="h-dvh lg:h-full touch-manipulation font-board bg-black lg:bg-inherit">
+    <div class="h-[70%] lg:w-full overflow-scroll no-scrollbar">
         <div class="bg-[url('/images/peg.png')] bg-[size:1%] bg-repeat w-full min-h-[100%] p-3"> <!-- edit the min-h percentage to edit the buffer -->
             <div class="mt-5 flex justify-evenly items-baseline">
                 <h1 class="text-2xl text-high-break-yellow">HIGH BREAK BOARD</h1>
@@ -35,12 +35,12 @@
                 <BreakList breakInfo={breakInfo} showAll={showAll}></BreakList>
             </div>
             <div class="pl-16 mt-16 lg:hidden"><BoardText text="Submit new break"></BoardText></div>
-            <div class="flex justify-center"><BreakForm></BreakForm></div>
+            <div class="flex justify-center lg:hidden"><BreakForm></BreakForm></div>
         </div>
     </div>
-    <div class="middle-bracket fixed top-[70%] lg:top-[70%] w-screen h-3 mix-blend-darken"></div>
-    <div class="lg:w-60 lg:h-1/5 h-[30%] overflow-scroll">
-        <div class="bg-[url('/images/peg.png')] bg-[size:1%] bg-repeat min-h-[30%] w-full lg:w-60 p-3">
+    <div class="middle-bracket lg:absolute fixed top-[70%] w-screen lg:w-full h-3 mix-blend-darken z-50"></div>
+    <div class="lg:w-full h-[30%] overflow-scroll no-scrollbar">
+        <div class="bg-[url('/images/peg.png')] bg-[size:1%] bg-repeat min-h-[30%] lg:min-h-[40%] w-full p-3">
             <div class="mt-5 flex justify-evenly items-baseline">
                 <h1 class="text-2xl text-high-break-yellow">ANNUAL TOP THREE</h1>
                 <pre class="font-board text-lg">2022-2023</pre>
@@ -56,10 +56,10 @@
 </div>
 
 <!-- frame -->
-<div class="left-bracket  fixed top-0 left-0  w-3 h-screen mix-blend-darken"></div>
-<div class="right-bracket fixed top-0 right-0 w-3 h-screen mix-blend-darken"></div>
-<div class="upper-bracket fixed top-0         w-screen h-3 mix-blend-darken"></div>
-<div class="lower-bracket fixed bottom-0      w-screen h-3 mix-blend-darken"></div>
+<div class="left-bracket  fixed lg:absolute top-0 left-0  w-3 h-[calc(100dvh-0.375rem)] lg:h-full mix-blend-darken"></div>
+<div class="right-bracket fixed lg:absolute top-0 right-0 w-3 h-[calc(100dvh-0.375rem)] lg:h-full mix-blend-darken"></div>
+<div class="upper-bracket fixed lg:absolute top-0         lg:w-full w-[calc(100dvw-0.375rem)] h-3 mix-blend-darken"></div>
+<div class="lower-bracket fixed lg:absolute bottom-0      lg:w-full w-[calc(100dvw-0.375rem)] h-3 mix-blend-darken"></div>
 
 <style>
     .left-bracket {
@@ -76,5 +76,9 @@
     }
     .middle-bracket {
         background: linear-gradient(180deg, #101010 0%, #000 50%, #101010 100%);
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
     }
 </style>
