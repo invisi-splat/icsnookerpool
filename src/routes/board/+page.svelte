@@ -3,11 +3,22 @@
     import BreakForm from "./breakForm.svelte";
     import { showAll } from "$lib/stores";
     import type { PageData } from './$types';
+    import { supabase } from "$lib/supabaseClient";
+    import { onMount } from "svelte";
 	
 	export let data: PageData;
     let showAllValue: boolean;
+    let loggedIn = false;
     
     showAll.subscribe(v => showAllValue = v)
+    onMount(async () => {
+        const { data, error } = await supabase.auth.getSession();
+        if (error) { throw error; }
+        if (data.session) {
+            document.getElementsByTagName("body")[0].style.background = "var(--blue-baize)";
+            loggedIn = true;
+        }
+    })
 </script>
 
 <svelte:head>
@@ -16,7 +27,7 @@
 
 <div class="lg:flex lg:pt-10 lg:pb-0 lg:w-screen lg:h-screen lg:overflow-hidden">
     <div class="lg:w-1/2 lg:h-[95%] lg:relative lg:ml-10">
-        <Board breakInfo={data.breakInfo} currentMonth={data.currentMonth} annualBreakInfo={data.annualBreakInfo} currentYear={data.currentYear} ></Board>
+        <Board loggedIn={ loggedIn } breakInfo={data.breakInfo} currentMonth={data.currentMonth} annualBreakInfo={data.annualBreakInfo} currentYear={data.currentYear} ></Board>
     </div>
     <div class="lg:block lg:w-1/2 hidden lg:text-white lg:ml-10 lg:mr-5">
         <h1 class="text-4xl mb-3">IC Snooker & Pool Society</h1>

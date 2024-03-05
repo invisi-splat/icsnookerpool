@@ -1,22 +1,15 @@
 <script lang="ts">
+    import "../../app.css";
     import Ball from "./ball.svelte"
-    import type { PageData } from './$types';
     import { onMount } from "svelte";
     import { fly } from "svelte/transition";
 
-    export let data: PageData;
-
-    const balls: BallInfo[] = data.ballInfo
     let showTitle: boolean = false
 
     onMount(() => {
         showTitle = true
     })
 </script>
-
-<svelte:head>
-    <title>IC Snooker & Pool</title> 
-</svelte:head>
 
 <div class="relative h-dvh overflow-hidden">
     {#if !showTitle}
@@ -41,14 +34,7 @@
                 <p transition:fly={{ duration: 1000, y: 50 }} class="mt-3 text-2xl lg:text-5xl font-serif italic font-light">Resurrexit a flamis</p>
             {/if}
         </div>
-
-        <div class="flex flex-col lg:flex-row items-center lg:mt-10 lg:justify-around mb-24">
-            {#each balls as ball}
-                {#if showTitle}
-                    <Ball ballInfo={ball}></Ball>
-                {/if}
-            {/each}
-        </div>
+        <slot />
     </div>
 
     {#if showTitle}
@@ -93,8 +79,8 @@
 
 <style>
 :global(body) {
-    background: var(--green-baize);
     color: white;
     overflow-y: hidden !important;
 }
 </style>
+

@@ -84,6 +84,7 @@
                 }
                 selectedUserId = user_id;
             }
+
             const response = await fetch('/api/board/new_break', {
                 method: 'POST',
                 body: JSON.stringify({ name, breakTotal, location, locationPrefix, ballsPotted, userId: selectedUserId }),
@@ -130,10 +131,10 @@
     function resetForm() {
         name = "";
         breakTotal = 0;
-        locationPrefix = "at";
         location = "";
         ballsPotted = [];
-        console.log("awudhjwua")
+        selectedUserId = "";
+        confirmNewUser = false;
     }
 </script>
 

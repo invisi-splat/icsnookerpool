@@ -4,6 +4,7 @@
     import BreakList from "./breakList.svelte";
     import { showAll } from "$lib/stores";
     
+    export let loggedIn: boolean;
     export let breakInfo: BreakInfo;
     export let currentMonth: string;
     export let annualBreakInfo: BreakInfo;
@@ -23,7 +24,7 @@
                     <BoardText text={ currentMonth }></BoardText>
                 </div>
             </div>
-            <div class="flex justify-evenly lg:hidden mt-5">
+            <div class="flex justify-evenly gap-5 flex-wrap lg:hidden mt-5">
                 <a href="#form" class="text-[#9E9E9E] border-2 border-[#9E9E9E] py-1 px-3">
                     <BoardText text="New break?"></BoardText>
                 </a>
@@ -34,6 +35,11 @@
                     <BoardText text="Show all"></BoardText>
                     {/if}
                 </button>
+                {#if loggedIn}
+                    <button class="text-[#889987] border-[#889987] border-2 py-1 px-3">
+                        <BoardText text="Review breaks"></BoardText>
+                    </button>
+                {/if}
             </div>
             <div class="my-5 relative">
                 <svg class="absolute right-2" xmlns="http://www.w3.org/2000/svg" width="17" height="16" viewBox="0 0 17 16" fill="none">
