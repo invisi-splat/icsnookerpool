@@ -6,7 +6,7 @@
 
     let showTitle: boolean = false
 
-    onMount(() => {
+    onMount(async () => {
         showTitle = true
     })
 </script>

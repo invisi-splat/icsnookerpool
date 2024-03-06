@@ -3,9 +3,9 @@ import { supabase } from "$lib/supabaseClient";
 
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
-export const load: PageServerLoad = async () => {
-    const currentMonth = (new Date()).getMonth();
-    const currentYear = (new Date()).getFullYear();
+export const load: PageServerLoad = async ({ url }) => {
+    const currentMonth = url.searchParams.has("month") ? Number(url.searchParams.get("month")) : (new Date()).getMonth();
+    const currentYear = url.searchParams.has("year") ? Number(url.searchParams.get("year")) : (new Date()).getFullYear();
     const breakInfo = await supabase
         .from("breaks")
         .select(`
@@ -20,7 +20,6 @@ export const load: PageServerLoad = async () => {
 
     const startYear = currentMonth < 8 ? currentYear - 1 : currentYear;
     const nextYear = startYear + 1;
-
 
     if (breakInfo.error) throw breakInfo.error;
     const annualBreakInfo = await supabase

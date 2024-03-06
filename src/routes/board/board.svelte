@@ -11,6 +11,7 @@
     export let currentYear: string;
 
     let showAllValue: boolean;
+    let selectMonth: false;
 
     showAll.subscribe(v => showAllValue = v)
 </script>
@@ -20,8 +21,9 @@
         <div class="bg-[url('/images/peg.png')] bg-[size:1%] bg-repeat w-full min-h-[100%] p-3"> <!-- edit the min-h percentage to edit the buffer -->
             <div class="mt-5 flex justify-evenly items-baseline">
                 <h1 class="text-2xl text-high-break-yellow">HIGH BREAK BOARD</h1>
-                <div>
-                    <BoardText text={ currentMonth }></BoardText>
+                <div class="relative flex justify-start">
+                    <div><BoardText text={ currentMonth }></BoardText></div>
+                    <!-- implement month selection eventually -->
                 </div>
             </div>
             <div class="flex justify-evenly gap-5 flex-wrap lg:hidden mt-5">
