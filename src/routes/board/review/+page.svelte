@@ -19,11 +19,16 @@
 
     async function handleApprove(sBreak: BreakEntry, index: number) {
         message[index] = "Processing..."
+        const submittedTime = new Date(sBreak.submitted);
+        const currentYear = submittedTime.getFullYear();
+        const currentMonth = submittedTime.getMonth();
         const bestBreaksReq = await supabase
             .from("breaks")
             .select("*")
             .eq("player", sBreak.player.user_id)
             .eq("is_best", true)
+            .gt("submitted", `${currentYear}-${currentMonth < 9 ? '0' : ''}${currentMonth+1}-01`)
+            .lt("submitted", `${currentYear}-${currentMonth < 8 ? '0' : ''}${currentMonth+2}-01`)
             .order("break", { ascending: false })
             .range(0, 2);
         
