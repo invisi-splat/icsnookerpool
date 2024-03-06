@@ -28,6 +28,10 @@
     })
 </script>
 
+<svelte:head>
+    <title>Login | IC Snooker & Pool</title> 
+</svelte:head>
+
 <div class="lg:flex lg:justify-around lg:px-24">
     <img src={ phoenixImg } alt="Phoenix logo" class="lg:size-1/4 lg:inline-block lg:rounded-full hidden" />
     <div class="flex flex-col items-center lg:items-baseline lg:mt-10 lg:justify-around mb-24 px-30 lg:w-1/2">

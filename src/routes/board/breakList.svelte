@@ -2,17 +2,14 @@
     import BoardBall from "./boardBall.svelte";
     import BoardText from "./boardText.svelte";
     import { fade } from "svelte/transition";
+    import { toNiceDate } from "$lib/functions/checkLoggedIn";
 
     export let showAll: Boolean;
     export let breakInfo: BreakInfo;
 
-    const NEW_THRESHOLD: number = 1000 * 60 * 60 * 36
-    let showDetailedBreak: Boolean[] = []
-
-    function getDate(sinceEpoch: number): string {
-        let date = new Date(sinceEpoch)
-        return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear().toString().substring(2)}`
-    }
+    const HOURS: number = 18
+    const NEW_THRESHOLD: number = 1000 * 60 * 60 * HOURS
+    let showDetailedBreak: Boolean[] = [] 
 </script>
 
 {#each breakInfo as sBreak, index}
@@ -39,7 +36,7 @@
         {#if showDetailedBreak[index]}
         <div class="text-[#9E9E9E] flex flex-col items-center mx-5">
             <div>
-                <BoardText text="Submitted {getDate(Date.parse(sBreak.submitted))}{sBreak.location ? ' ' + sBreak.location : ''}, {sBreak.balls_potted ? sBreak.balls_potted.length : "?"} balls"></BoardText>
+                <BoardText text="Submitted {toNiceDate(Date.parse(sBreak.submitted))}{sBreak.location ? ' ' + sBreak.location : ''}, {sBreak.balls_potted ? sBreak.balls_potted.length : "?"} balls"></BoardText>
             </div>
             <div class="flex flex-wrap gap-1.5 mt-2 w-4/5">
                 {#if sBreak.balls_potted}
@@ -53,4 +50,6 @@
         </div>
         {/if}
     {/if}
+{:else}
+<div><BoardText text="No breaks."></BoardText></div>
 {/each}

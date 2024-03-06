@@ -24,7 +24,8 @@ export default {
         "brown-ball": "#AD4C1C",
         "blue-ball": "#040FBB",
         "pink-ball": "#FC5567",
-        "black-ball": "#010101"
+        "black-ball": "#010101",
+        "pending-break": "#DCFBCD"
       }
     },
   },

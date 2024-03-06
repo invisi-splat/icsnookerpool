@@ -23,7 +23,7 @@
                 <h1 class="text-2xl text-high-break-yellow">HIGH BREAK BOARD</h1>
                 <div class="relative flex justify-start">
                     <div><BoardText text={ currentMonth }></BoardText></div>
-                    <!-- implement month selection eventually -->
+                    <!-- TODO: implement month selection eventually -->
                 </div>
             </div>
             <div class="flex justify-evenly gap-5 flex-wrap lg:hidden mt-5">
@@ -38,9 +38,9 @@
                     {/if}
                 </button>
                 {#if loggedIn}
-                    <button class="text-[#889987] border-[#889987] border-2 py-1 px-3">
+                    <a href="/board/review" class="text-[#889987] border-[#889987] border-2 py-1 px-3">
                         <BoardText text="Review breaks"></BoardText>
-                    </button>
+                    </a>
                 {/if}
             </div>
             <div class="my-5 relative">
@@ -51,6 +51,9 @@
             </div>
             <div class="pl-16 mt-16 lg:hidden"><BoardText text="Submit new break"></BoardText></div>
             <div class="flex justify-center lg:hidden" id="form"><BreakForm></BreakForm></div>
+            <div class="flex justify-end lg:hidden">
+                <a href="/" class="text-[#879997] border-2 border-[#879997] py-1 px-3 mr-10"><BoardText text="Home"></BoardText></a>
+            </div>
         </div>
     </div>
     <div class="middle-bracket lg:absolute fixed top-[70%] w-screen lg:w-full h-3 mix-blend-darken z-50"></div>

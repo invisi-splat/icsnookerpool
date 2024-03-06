@@ -20,7 +20,7 @@
 </script>
 
 <svelte:head>
-    <title>IC Snooker & Pool</title> 
+    <title>Home | IC Snooker & Pool</title> 
 </svelte:head>
 
 <div class="flex flex-col lg:flex-row items-center lg:mt-10 lg:justify-around mb-24">

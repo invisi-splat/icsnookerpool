@@ -8,20 +8,22 @@ type BallInfo = {
     delay: number
 }
 
-type BreakInfo = {
+type BreakInfo = BreakEntry[]
+
+type BreakEntry = {
     id: number,
     submitted: string,
     break: number,
     verified: boolean,
     is_best: boolean,
     location: string,
-    balls_potted?: number[] | null,
+    balls_potted?: number[],
     reactions?: number[] | null, // change this to an appropriate type
     player: User,
     opponent?: User | null,
     player_info: UserInfo,
     opponent_info?: UserInfo | null,
-}[]
+}
 
 type User = {
     user_id: string,
