@@ -58,7 +58,7 @@
     </div>
     <div class="middle-bracket lg:absolute fixed top-[70%] w-screen lg:w-full h-3 mix-blend-darken z-50"></div>
     <div class="lg:w-full h-[30%] overflow-scroll no-scrollbar">
-        <div class="bg-[url('/images/peg.png')] bg-[size:1%] bg-repeat min-h-[30%] lg:min-h-[40%] w-full p-3">
+        <div class="bg-[url('/images/peg.png')] bg-[size:1%] bg-repeat min-h-[100%] lg:min-h-[100%] w-full p-3">
             <div class="mt-5 flex justify-evenly items-baseline">
                 <h1 class="text-2xl text-high-break-yellow">ANNUAL TOP THREE</h1>
                 <div>
