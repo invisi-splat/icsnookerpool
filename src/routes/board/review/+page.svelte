@@ -87,7 +87,7 @@
     let message: string[] = [];
 
     let activeBreakIndex: number;
-    let activeBreak: [BreakEntry, number];
+    let activeBreak: [BreakEntry, number] | undefined;
 </script>
 
 <div class="lg:hidden h-dvh overflow-y-scroll text-white">
@@ -182,8 +182,8 @@
                 ballsPotted={ activeBreak[0].balls_potted ? activeBreak[0].balls_potted : []}
                 locationPrefix=""
                 location={ activeBreak[0].location ? activeBreak[0].location : "(no location)"}
-                on:approve={() => handleApprove(activeBreak[0], activeBreak[1])}
-                on:reject={() => handleReject(activeBreak[0], activeBreak[1])}
+                on:approve={() => { handleApprove(activeBreak[0], activeBreak[1]); activeBreak = undefined }}
+                on:reject={() => { handleReject(activeBreak[0], activeBreak[1]); activeBreak = undefined }}
                 ></BreakForm>
             </div>
             {/if}

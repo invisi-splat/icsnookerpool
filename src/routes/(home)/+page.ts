@@ -12,7 +12,7 @@ export const load: () => { ballInfo: BallInfo[] } = () => {
                 symbol: "W",
                 description: "Whatsapp group chat",
                 ballColor: "bg-whatsapp-green",
-                linkTo: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                linkTo: "https://chat.whatsapp.com/EFJm97Ri4PGL5VFhyMVUSj",
                 delay: 400
             },
             {
@@ -26,7 +26,7 @@ export const load: () => { ballInfo: BallInfo[] } = () => {
                 symbol: "I",
                 description: "Instagram",
                 ballColor: "instagram",
-                linkTo: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                linkTo: "https://www.instagram.com/icusnooker/",
                 delay: 800
             }
         ]
