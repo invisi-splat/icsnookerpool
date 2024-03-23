@@ -19,12 +19,16 @@
 
     async function handleApprove(sBreak: BreakEntry, index: number) {
         message[index] = "Processing..."
+        const currentMonth = (new Date(sBreak.submitted)).getMonth();
+        const currentYear = (new Date(sBreak.submitted)).getFullYear();
         const bestBreaksReq = await supabase
             .from("breaks")
             .select("*")
             .eq("player", sBreak.player.user_id)
             .eq("is_best", true)
             .order("break", { ascending: false })
+            .gt("submitted", `${currentYear}-${currentMonth < 9 ? '0' : ''}${currentMonth+1}-01`)
+            .lt("submitted", `${currentYear}-${currentMonth < 8 ? '0' : ''}${currentMonth+2}-01`)
             .range(0, 2);
         
         const bestBreaks = bestBreaksReq.data?.concat(sBreak);
@@ -71,7 +75,7 @@
 
     async function handleReject(sBreak: BreakEntry, index: number) {
         message[index] = "Processing..."
-        const { data, error } = await supabase
+        const { error } = await supabase
             .from("breaks")
             .delete()
             .eq("id", sBreak.id)
