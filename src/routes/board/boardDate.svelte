@@ -17,13 +17,13 @@
         goto(`/board?month=${selectedMonth}&year=${selectedYear}`)
     }
 
-    const START_YEAR = 2020
+    const START_YEAR = 2024
 </script>
 
 <div>
-    <select style={ `width: ${month.length * 14}px` } bind:value={selectedMonth} class="bg-opacity-0 bg-black h-fit text-2xl text-right-last mr-2" on:change={ loadNewMonth }>
+    <select style={ `width: ${month.length * 20}px` } bind:value={selectedMonth} class="bg-opacity-0 bg-black h-fit text-2xl text-right-last mr-2" on:change={ loadNewMonth }>
         {#each monthNames as monthName}
-        <option value={ monthNames.indexOf(monthName) } selected={ monthName === month } class="text-2xl text-right"><BoardText text={ monthName }></BoardText></option>
+        <option value={ monthNames.indexOf(monthName) } selected={ monthName === month } class="bg-gray-500 text-2xl text-right"><BoardText text={ monthName }></BoardText></option>
         {/each}
     </select>
     <select bind:value={selectedYear} class="bg-opacity-0 bg-black h-fit w-fit text-2xl" on:change={ loadNewMonth }>
