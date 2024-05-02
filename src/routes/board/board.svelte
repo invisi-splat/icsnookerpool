@@ -3,6 +3,7 @@
     import BreakForm from "./breakForm.svelte";
     import BreakList from "./breakList.svelte";
     import { showAll } from "$lib/stores";
+    import BoardDate from "./boardDate.svelte";
     
     export let loggedIn: boolean;
     export let breakInfo: BreakInfo;
@@ -22,8 +23,7 @@
             <div class="mt-5 flex justify-evenly items-baseline">
                 <h1 class="text-2xl text-high-break-yellow">HIGH BREAK BOARD</h1>
                 <div class="relative flex justify-start">
-                    <div><BoardText text={ currentMonth }></BoardText></div>
-                    <!-- TODO: implement month selection eventually -->
+                    <BoardDate month={ currentMonth.split(" ")[0] } year={ currentMonth.split(" ")[1] }></BoardDate>
                 </div>
             </div>
             <div class="flex justify-evenly gap-5 flex-wrap lg:hidden mt-5">
