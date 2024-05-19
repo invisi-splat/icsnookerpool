@@ -30,6 +30,8 @@
             .gt("submitted", `${currentYear}-${currentMonth < 9 ? '0' : ''}${currentMonth+1}-01`)
             .lt("submitted", `${currentYear}-${currentMonth < 8 ? '0' : ''}${currentMonth+2}-01`)
             .order("break", { ascending: false })
+            .gt("submitted", `${currentYear}-${currentMonth < 9 ? '0' : ''}${currentMonth+1}-01`)
+            .lt("submitted", `${currentYear}-${currentMonth < 8 ? '0' : ''}${currentMonth+2}-01`)
             .range(0, 2);
         
         const bestBreaks = bestBreaksReq.data?.concat(sBreak);
@@ -76,7 +78,7 @@
 
     async function handleReject(sBreak: BreakEntry, index: number) {
         message[index] = "Processing..."
-        const { data, error } = await supabase
+        const { error } = await supabase
             .from("breaks")
             .delete()
             .eq("id", sBreak.id)
@@ -143,7 +145,7 @@
     </div>
 </div>
 <div class="hidden text-white lg:flex lg:pt-10 lg:pb-0 lg:w-screen lg:h-screen lg:overflow-hidden">
-    <div class="p-10 w-1/2 border-[15px] shadow-[2px_2px_10px_black] green-baize h-[95%] ml-10 rounded-lg border-black">
+    <div class="p-10 w-1/2 border-[15px] shadow-[2px_2px_10px_black] green-baize h-[95%] overflow-y-scroll ml-10 rounded-lg border-black">
         <h1 class="text-4xl">Pending breaks</h1>
         <div class="flex flex-col justify-center items-center gap-y-5 my-10">
             {#each data.unverifiedBreaks as sBreak, index}
