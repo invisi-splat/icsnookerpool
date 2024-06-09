@@ -8,6 +8,7 @@ export default {
         "serif": ["Roboto Serif", "ui-serif", "Georgia", "Cambria", "Times New Roman", "Times", "serif"],
         "ball": ["'M PLUS Rounded 1c'", "ui-sans-serif"],
         "board": ["'Alsina'", "ui-sans-serif"],
+        "overlay": ["'Cabin'", "ui-sans-serif"], 
         "handwritten": ["'Rock Salt'", "ui-sans-serif"]
       },
       colors: {
