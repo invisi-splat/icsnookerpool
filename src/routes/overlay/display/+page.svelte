@@ -7,6 +7,8 @@
     setTimeout(() => {
         something = true;
     }, 6000)
+
+    let showConnectionPane = true;
 </script>
 
 <div class="text-white text-2xl font-light h-14 flex items-center justify-center relative">
@@ -34,6 +36,16 @@
         </div>
         <div class="flex h-10 w-1/4 bg-gray-300 bg-opacity-50 items-center justify-center">
             0:21 Average shot time 1:42
+        </div>
+    </div>
+</div>
+<div class="{ showConnectionPane ? 'flex' : 'hidden' } justify-center items-center backdrop-blur-md w-full h-full top-0 left-0 absolute z-20 bg-white bg-opacity-80">
+    <div class="w-[80%] max-h-[80%] bg-gray-200 bg-opacity-50 p-4 text-xl">
+        No connection has been established!
+        <br>
+        Head to the <a href="/overlay/control" class="underline text-yellow-500">remote control</a> page and enter the following code in settings to connect the remote:
+        <div class="w-full flex justify-center my-10">
+            <span class="text-3xl font-mono">1239hda0</span>
         </div>
     </div>
 </div>
