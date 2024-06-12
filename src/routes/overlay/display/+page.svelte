@@ -2,10 +2,13 @@
     import { browser } from "$app/environment";
     import Peer from "peerjs";
 
+    const PIN_MAX_LEN = 10;
+
     let something = true;
 
     let p2pid = ""; 
-    let showConnectionPane: boolean; 
+    let showConnectionPane = true; 
+    let connectedRemotes = 0;
     let peer: Peer;
     if (browser) {
         p2pid = localStorage["p2pid"] ?? "";
@@ -29,40 +32,56 @@
         bestOf: 1,
         activeTurn: 0,
         onRed: false,
+        stat: {
+            visible: false,
+            side: 0,
+            text: ""
+        }
+    }
+
+    const handleKeypress = (e: KeyboardEvent) => {
+        if (e.key === "m") {
+            showConnectionPane = !showConnectionPane;
+        } else if (e.key === "p" && showConnectionPane) {
+            peer.destroy();
+            peer = new Peer(Math.random().toString(36).slice(2, PIN_MAX_LEN), { debug: 3 });
+            bindPeer();
+        }
     }
 
     let scoreboardInfo = structuredClone(emptyScoreboard);
 
-    showConnectionPane = true;
-
     if (p2pid === "") {
-        peer = new Peer(Math.random().toString(36).slice(2, 10), { debug: 3 });
+        peer = new Peer(Math.random().toString(36).slice(2, PIN_MAX_LEN), { debug: 3 });
     } else {
         peer = new Peer(p2pid, { debug: 3 });
     }
 
-    peer.on("open", id => {
-        p2pid = id;
-        localStorage["p2pid"] = p2pid;
-    })
+    function bindPeer() {
+        peer.on("open", id => {
+            p2pid = id;
+            localStorage["p2pid"] = p2pid;
+            
+            peer.on("connection", conn => {
+                connectedRemotes++;
+                showConnectionPane = false;
+                conn.on("data", data => {
+                    //@ts-ignore
+                    scoreboardInfo = data;
+                })
 
-    peer.on("connection", conn => {
-        showConnectionPane = false;
-        conn.on("data", data => {
-            scoreboardInfo = data; // yes it fucking is
+                conn.on("close", () => {
+                    connectedRemotes--;
+                    showConnectionPane = true;
+                })
+            })
         })
-    })
+    }
 
-    peer.on("disconnected", conn => {
-        showConnectionPane = true;
-    })
+    bindPeer();
 </script>
 
-<svelte:window on:keydown|preventDefault={(e) => {
-    if (e.key === "m") {
-        showConnectionPane = !showConnectionPane;
-    }
-}}></svelte:window>
+<svelte:window on:keydown|preventDefault={ handleKeypress }></svelte:window>
 
 <div class="text-white text-2xl font-light h-14 flex items-center justify-center relative">
     <div class="w-full flex items-center h-full z-5">
@@ -82,7 +101,7 @@
     </div>
     <!-- just the background -->
     <div class="green-baize w-full absolute -z-10 h-10"></div>
-    <div class="w-full absolute text-black -z-20 h-12 { something ? 'top-2' : 'top-12' } flex justify-center pl-20 pr-20 transition-all duration-1000">
+    <div class="w-full absolute text-black -z-20 h-12 { scoreboardInfo.stat.visible ? 'top-2' : 'top-12' } flex justify-center pl-20 pr-20 transition-all duration-1000">
         <div class="hidden h-10 -flex w-2/5 bg-gray-300 bg-opacity-50 items-center">
             <span class="ml-4">41 Ahead</span>
             <span class="ml-6">35 Remaining</span>
@@ -94,13 +113,13 @@
 </div>
 <div class="{ showConnectionPane ? 'flex' : 'hidden' } justify-center items-center backdrop-blur-md w-full h-full top-0 left-0 absolute z-20 bg-white bg-opacity-80">
     <div class="w-[80%] max-h-[80%] bg-gray-200 bg-opacity-50 p-4 text-xl">
-        No connection has been established!
+        { connectedRemotes === 0 ? 'No connection has been established!' : `There ${connectedRemotes === 1 ? 'is 1 remote' : `are ${connectedRemotes} remotes`} connected.`}
         <br>
-        Head to the <a href="/overlay/control" class="underline text-yellow-500">remote control</a> page and enter the following code in settings to connect the remote:
+        Head to the <a href="/overlay/control" class="underline text-yellow-500">remote control</a> page and enter the following pin in settings to connect the remote:
         <div class="w-full flex justify-center my-10">
             <span class="text-3xl font-mono">{ p2pid }</span>
         </div>
-        (Press <span class="font-mono">m</span> to toggle this menu.)
+        (Press <span class="font-mono">m</span> to toggle this menu or press <span class="font-mono">p</span> to generate a new connection pin.)
     </div>
 </div>
 
