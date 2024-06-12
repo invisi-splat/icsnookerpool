@@ -34,8 +34,12 @@
         onRed: false,
         stat: {
             visible: false,
-            side: 0,
-            text: ""
+            data: {
+                name: "",
+                side: 0,
+                break: [],
+                total: 0
+            }
         }
     }
 
@@ -119,6 +123,7 @@
         scoreboardInfo.player[scoreboardInfo.activeTurn].shotTimes.push(Date.now() - lastEndOfBreak);
         lastEndOfBreak = Date.now();
         scoreboardInfo.activeTurn = (scoreboardInfo.activeTurn + 1) % 2;
+        refreshStats();
         scoreboardInfo = scoreboardInfo;
     }
 
@@ -131,10 +136,55 @@
             handleEnter();
             foulMode = !foulMode;
         } else {
+            if (value === 1) {
+                scoreboardInfo.onRed = false;
+            } else {
+                scoreboardInfo.onRed = true;
+            }
             scoreboardInfo.player[scoreboardInfo.activeTurn].currentBreak.push(value);
             scoreboardInfo.player[scoreboardInfo.activeTurn].currentScore += value;
         }
+        refreshStats();
         scoreboardInfo = scoreboardInfo;
+    }
+
+    let showStatLength = 0;
+
+    const handleToggleStat = () => {
+        scoreboardInfo.stat.visible = !scoreboardInfo.stat.visible;
+        refreshStats();
+        scoreboardInfo = scoreboardInfo;
+    }
+
+    let selectedStat = "";
+
+    function refreshStats() {
+        scoreboardInfo.stat.data = getStatData();
+    }
+
+    function getStatData() {
+        let data: any = {
+            name: selectedStat
+        };
+        switch (selectedStat) {
+            case "cb":
+                data["side"] = scoreboardInfo.activeTurn === 0 ? 0 : 2;
+                const counts = Array(8).fill(0);
+                for (const num of scoreboardInfo.player[scoreboardInfo.activeTurn].currentBreak) {
+                    counts[num] = counts[num] ? counts[num] + 1 : 1;
+                }
+                data["break"] = counts;
+                //@ts-ignore
+                data["total"] = scoreboardInfo.player[scoreboardInfo.activeTurn].currentBreak.reduce((a, b) => a + b, 0);
+                break;
+            default:
+                break;
+        }
+        return data;
+    }
+
+    const handleShowStat = (duration: number) => {
+        
     }
 
     $: {
@@ -175,17 +225,22 @@
             <button on:click={ handleEsc } class="w-18 active:opacity-50 p-2 col-span-1 blue-gradient">Undo</button>
             <button on:click={ handleEnter } class="w-18 active:opacity-50 p-2 col-span-1 blue-gradient">Enter</button>
         </div>
-        <select class="mx-4 border-2 border-white bg-transparent w-5/6 text-center flex justify-center p-2 text-xl">
-            <option class="text-center">Current break</option>
+        <select bind:value={ selectedStat } class="mx-4 border-2 border-white bg-transparent w-5/6 text-center flex justify-center p-2 text-xl">
+            <option value="cb" >Current break</option>
+            <option value="p1bar" >Player 1 behind/ahead remaining</option>
+            <option value="p2bar" >Player 2 behind/ahead remaining</option>
+            <option value="ast" >Average shot time</option>
+            <option value="ss" >Safety success</option>
+            <option value="lps" >Long pot success</option>
+            <option value="ses" >Snooker escape success</option>
+            <option value="fc" >Fouls committed</option>
         </select>
         <div class="flex items-center text-xl gap-x-2">
-            <button class="w-18 active:opacity-50 p-2 orange-gradient text-xl">Tog. on</button>
+            <button on:click={ handleToggleStat } class="w-18 active:opacity-50 { scoreboardInfo.stat.visible ? 'saturate-50' : '' } p-2 orange-gradient text-xl">Tog. { scoreboardInfo.stat.visible ? 'off' : 'on'}</button>
             or
-            <button class="w-18 active:opacity-50 p-2 green-gradient text-xl">Show</button>
+            <button on:click={ () => { handleShowStat(showStatLength) } } class="w-18 active:opacity-50 p-2 green-gradient text-xl">Show</button>
             for
-            <select name="" id="" class="border-2 border-white bg-transparent text-center flex justify-center p-2 text-xl">
-                <option value="">40</option>
-            </select>
+            <input bind:value={ showStatLength } type="number" pattern="[0-9]*" class="w-12 border-2 border-white bg-transparent text-center flex justify-center p-2 text-xl">
             seconds
         </div>
         <div class="flex justify-end w-full pr-5">

@@ -1,5 +1,6 @@
 <script lang="ts">
     import { browser } from "$app/environment";
+    import ControlBall from "./controlBall.svelte";
     import Peer from "peerjs";
 
     const PIN_MAX_LEN = 10;
@@ -34,8 +35,12 @@
         onRed: false,
         stat: {
             visible: false,
-            side: 0,
-            text: ""
+            data: {
+                name: "",
+                side: 0,
+                break: [],
+                total: 0
+            }
         }
     }
 
@@ -78,6 +83,8 @@
         })
     }
 
+    $: console.log(scoreboardInfo);
+
     bindPeer();
 </script>
 
@@ -101,13 +108,25 @@
     </div>
     <!-- just the background -->
     <div class="green-baize w-full absolute -z-10 h-10"></div>
-    <div class="w-full absolute text-black -z-20 h-12 { scoreboardInfo.stat.visible ? 'top-2' : 'top-12' } flex justify-center pl-20 pr-20 transition-all duration-1000">
+    <div class="w-full absolute text-black -z-20 h-12 { scoreboardInfo.stat.visible ? 'top-12' : 'top-2' } flex { scoreboardInfo.stat.data.side === 0 ? 'justify-start' : scoreboardInfo.stat.data.side === 1 ? 'justify-center' : 'justify-end'  } pl-20 pr-20 transition-all duration-1000">
         <div class="hidden h-10 -flex w-2/5 bg-gray-300 bg-opacity-50 items-center">
             <span class="ml-4">41 Ahead</span>
             <span class="ml-6">35 Remaining</span>
         </div>
-        <div class="flex h-10 min-w-[25%] bg-gray-300 bg-opacity-50 items-center justify-center">
+        <div class="hidden h-10 min-w-[25%] bg-gray-300 bg-opacity-50 items-center justify-center">
             0:21 Average shot time 1:42
+        </div>
+        <div class="{ scoreboardInfo.stat.data.name === "cb" ? 'flex' : 'hidden' } h-10 w-2/5 bg-gray-300 bg-opacity-50 items-center justify-between">
+            <span class="ml-4">Break <span class="font-bold">{ scoreboardInfo.stat.data.total }</span></span>
+            <span class="mr-4 flex justify-normal gap-x-1">
+                {#if scoreboardInfo.stat.data.break !== undefined}
+                    {#each scoreboardInfo.stat.data.break as value, index}
+                        {#if value > 0}
+                            <ControlBall value={ index } count={ value }></ControlBall>
+                        {/if}
+                    {/each}
+                {/if}
+            </span>
         </div>
     </div>
 </div>
