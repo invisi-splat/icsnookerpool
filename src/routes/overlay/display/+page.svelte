@@ -49,42 +49,39 @@
         } else if (e.key === "p" && showConnectionPane) {
             peer.destroy();
             peer = new Peer(Math.random().toString(36).slice(2, PIN_MAX_LEN), { debug: 3 });
-            bindPeer();
         }
     }
 
     let scoreboardInfo = structuredClone(emptyScoreboard);
 
-    if (p2pid === "") {
-        peer = new Peer(Math.random().toString(36).slice(2, PIN_MAX_LEN), { debug: 3 });
+    if (true) {
+        peer = new Peer(Math.random().toString(36).slice(2, PIN_MAX_LEN), { debug: 3 , config: { 'iceServers': [
+            { 'url': 'stun:stun.l.google.com:19302' }  
+          ]}});
     } else {
         peer = new Peer(p2pid, { debug: 3 });
     }
 
-    function bindPeer() {
-        peer.on("open", id => {
-            p2pid = id;
-            localStorage["p2pid"] = p2pid;
-            
-            peer.on("connection", conn => {
-                connectedRemotes++;
-                showConnectionPane = false;
-                conn.on("data", data => {
-                    //@ts-ignore
-                    scoreboardInfo = data;
-                })
+    peer.on("open", id => {
+        p2pid = id;
+        localStorage["p2pid"] = p2pid;
+        
+        peer.on("connection", conn => {
+            connectedRemotes++;
+            showConnectionPane = false;
+            conn.on("data", data => {
+                //@ts-ignore
+                scoreboardInfo = data;
+            })
 
-                conn.on("close", () => {
-                    connectedRemotes--;
-                    showConnectionPane = true;
-                })
+            conn.on("close", () => {
+                connectedRemotes--;
+                showConnectionPane = true;
             })
         })
-    }
+    })
 
     $: console.log(scoreboardInfo);
-
-    bindPeer();
 </script>
 
 <svelte:window on:keydown|preventDefault={ handleKeypress }></svelte:window>
@@ -143,7 +140,7 @@
         <div class="w-full flex justify-center my-10">
             <span class="text-3xl font-mono">{ p2pid }</span>
         </div>
-        (Press <span class="font-mono">m</span> to toggle this menu or press <span class="font-mono">p</span> to generate a new connection pin.)
+        (Press <span class="font-mono">m</span> to toggle this menu.) <!--or press <span class="font-mono">p</span> to generate a new connection pin.)-->
     </div>
 </div>
 
