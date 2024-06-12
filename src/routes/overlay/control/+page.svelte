@@ -31,7 +31,7 @@
         player: Array(2).fill(null).map(() => {return structuredClone(emptyPlayer)}),
         bestOf: 1,
         activeTurn: 0,
-        onRed: false,
+        onColourAfterRed: false,
         stat: {
             visible: false,
             data: {
@@ -45,7 +45,7 @@
 
     const emptyStats = {
         player: [],
-        break: []
+        remainingBalls: [0, 15, 1, 1, 1, 1, 1, 1]
     }
 
     let scoreboardInfoStr = localStorage["scoreboardInfo"] ?? JSON.stringify(structuredClone(emptyScoreboard));
@@ -86,6 +86,8 @@
     const resetAll = () => {
         localStorage.removeItem("scoreboardInfo");
         scoreboardInfo = structuredClone(emptyScoreboard);
+        localStorage.removeItem("calculatedStats");
+        calculatedStats = structuredClone(emptyStats);
     }
 
     const saveMatchDetails = () => {
@@ -123,6 +125,7 @@
         scoreboardInfo.player[scoreboardInfo.activeTurn].shotTimes.push(Date.now() - lastEndOfBreak);
         lastEndOfBreak = Date.now();
         scoreboardInfo.activeTurn = (scoreboardInfo.activeTurn + 1) % 2;
+        scoreboardInfo.onColourAfterRed = false;
         refreshStats();
         scoreboardInfo = scoreboardInfo;
     }
@@ -137,9 +140,14 @@
             foulMode = !foulMode;
         } else {
             if (value === 1) {
-                scoreboardInfo.onRed = false;
+                scoreboardInfo.onColourAfterRed = true;
+                calculatedStats.remainingBalls[1]--;
             } else {
-                scoreboardInfo.onRed = true;
+                if (calculatedStats.remainingBalls[1] <= 0) {
+                    calculatedStats.remainingBalls[value]--;
+                } else {
+                    scoreboardInfo.onColourAfterRed = false;
+                }
             }
             scoreboardInfo.player[scoreboardInfo.activeTurn].currentBreak.push(value);
             scoreboardInfo.player[scoreboardInfo.activeTurn].currentScore += value;
@@ -149,8 +157,10 @@
     }
 
     let showStatLength = 0;
+    let showStatTimer: any;
 
     const handleToggleStat = () => {
+        clearInterval(showStatTimer);
         scoreboardInfo.stat.visible = !scoreboardInfo.stat.visible;
         refreshStats();
         scoreboardInfo = scoreboardInfo;
@@ -164,7 +174,8 @@
 
     function getStatData() {
         let data: any = {
-            name: selectedStat
+            name: selectedStat,
+            side: 0,
         };
         switch (selectedStat) {
             case "cb":
@@ -177,6 +188,22 @@
                 //@ts-ignore
                 data["total"] = scoreboardInfo.player[scoreboardInfo.activeTurn].currentBreak.reduce((a, b) => a + b, 0);
                 break;
+            case "p1bar":
+            case "p2bar":
+                data["side"] = selectedStat === "p1bar" ? 0 : 2;
+                data["diff"] = scoreboardInfo.player[0].currentScore - scoreboardInfo.player[1].currentScore;
+                data["ab"] = data["diff"] < 0 && selectedStat === "p1bar" || data["diff"] > 0 && selectedStat === "p2bar" ? "b" : "a";
+                data["diff"] = Math.abs(data["diff"]);
+                data["remaining"] = calculatedStats.remainingBalls[1] > 0 && scoreboardInfo.onColourAfterRed ? 7 : 0;
+                for (const [ball, count] of calculatedStats.remainingBalls.entries()) {
+                    data["remaining"] += ball === 1 ? count * 8 : ball
+                }
+                break;
+            case "ast":
+                data["side"] = 1;
+                data["times"] = [0, 1].map(value => Math.floor(scoreboardInfo.player[value].shotTimes.reduce((a, b) => a + b, 0) / (1000 * scoreboardInfo.player[value].shotTimes.length)))
+                data["times"] = data["times"].map(value => `${Math.floor(value / 60)}:${value % 60}`)
+                break;
             default:
                 break;
         }
@@ -184,15 +211,23 @@
     }
 
     const handleShowStat = (duration: number) => {
-        
+        clearInterval(showStatTimer);
+        scoreboardInfo.stat.visible = true;
+        refreshStats();
+        showStatTimer = setTimeout(() => {
+            scoreboardInfo.stat.visible = false;
+        }, duration * 1000);
+        scoreboardInfo = scoreboardInfo;
     }
 
     $: {
         localStorage["scoreboardInfo"] = JSON.stringify(scoreboardInfo);
+        localStorage["calculatedStats"] = JSON.stringify(calculatedStats);
         if (conn !== null && conn.open) {
             conn.send(scoreboardInfo);
         }
         scoreboardHistory.push(structuredClone(scoreboardInfo));
+        statsHistory.push(structuredClone(calculatedStats));
     }
 
     onMount(() => {

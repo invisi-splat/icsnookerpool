@@ -5,8 +5,6 @@
 
     const PIN_MAX_LEN = 10;
 
-    let something = true;
-
     let p2pid = ""; 
     let showConnectionPane = true; 
     let connectedRemotes = 0;
@@ -39,7 +37,8 @@
                 name: "",
                 side: 0,
                 break: [],
-                total: 0
+                total: 0,
+                times: []
             }
         }
     }
@@ -109,12 +108,18 @@
     <!-- just the background -->
     <div class="green-baize w-full absolute -z-10 h-10"></div>
     <div class="w-full absolute text-black -z-20 h-12 { scoreboardInfo.stat.visible ? 'top-12' : 'top-2' } flex { scoreboardInfo.stat.data.side === 0 ? 'justify-start' : scoreboardInfo.stat.data.side === 1 ? 'justify-center' : 'justify-end'  } pl-20 pr-20 transition-all duration-1000">
-        <div class="hidden h-10 -flex w-2/5 bg-gray-300 bg-opacity-50 items-center">
-            <span class="ml-4">41 Ahead</span>
-            <span class="ml-6">35 Remaining</span>
+        <div class="{ scoreboardInfo.stat.data.name === "p1bar" || scoreboardInfo.stat.data.name === "p2bar" ? 'flex' : 'hidden' } h-10 -flex w-2/5 bg-gray-300 bg-opacity-50 items-center">
+            {#if scoreboardInfo.stat.data.ab !== undefined}
+                <span class="ml-4"><span class="font-bold">{ scoreboardInfo.stat.data.diff }</span> { scoreboardInfo.stat.data.ab === "a" ? 'Ahead' : 'Behind'}</span>
+                <span class="ml-6"><span class="font-bold">{ scoreboardInfo.stat.data.remaining}</span> Remaining</span>
+            {/if}
         </div>
-        <div class="hidden h-10 min-w-[25%] bg-gray-300 bg-opacity-50 items-center justify-center">
-            0:21 Average shot time 1:42
+        <div class="{ scoreboardInfo.stat.data.name === "ast" ? 'flex' : 'hidden' } h-10 min-w-[25%] bg-gray-300 bg-opacity-50 items-center justify-center gap-x-3 px-4">
+            {#if scoreboardInfo.stat.data.times !== undefined}
+                <span class="font-bold">{ scoreboardInfo.stat.data.times[0]}</span>
+                <span>Average shot time</span>
+                <span class="font-bold">{ scoreboardInfo.stat.data.times[1]}</span>
+            {/if}
         </div>
         <div class="{ scoreboardInfo.stat.data.name === "cb" ? 'flex' : 'hidden' } h-10 w-2/5 bg-gray-300 bg-opacity-50 items-center justify-between">
             <span class="ml-4">Break <span class="font-bold">{ scoreboardInfo.stat.data.total }</span></span>
