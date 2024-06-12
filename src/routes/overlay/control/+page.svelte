@@ -56,6 +56,8 @@
 
     let lastEndOfBreak = Date.now();
 
+    let paused = false;
+
     console.log(scoreboardInfo);
 
     const connectToPeer = () => {
@@ -95,6 +97,7 @@
     }
 
     const handleGame = () => {
+        if (paused) { return; }
         if (scoreboardInfo.player[0].currentScore > scoreboardInfo.player[1].currentScore) {
             scoreboardInfo.player[0].framesWon++
         } else if (scoreboardInfo.player[0].currentScore < scoreboardInfo.player[1].currentScore) {
@@ -113,14 +116,20 @@
     let foulMode = false;
 
     const handleFoul = () => {
+        if (paused) { return; }
         foulMode = !foulMode;
     }
 
     const handleEsc = () => {
-
+        if (paused) { return; }
+        scoreboardHistory.pop();
+        scoreboardInfo = scoreboardHistory.pop();
+        statsHistory.pop();
+        calculatedStats = statsHistory.pop();
     }
 
     const handleEnter = () => {
+        if (paused) { return; }
         scoreboardInfo.player[scoreboardInfo.activeTurn].currentBreak = [];
         scoreboardInfo.player[scoreboardInfo.activeTurn].shotTimes.push(Date.now() - lastEndOfBreak);
         lastEndOfBreak = Date.now();
@@ -131,6 +140,7 @@
     }
 
     const handleBall = (value: number) => {
+        if (paused) { return; }
         if (foulMode) {
             if (value < 4) { return; }
             const activeTurn = scoreboardInfo.activeTurn;
@@ -202,7 +212,7 @@
             case "ast":
                 data["side"] = 1;
                 data["times"] = [0, 1].map(value => Math.floor(scoreboardInfo.player[value].shotTimes.reduce((a, b) => a + b, 0) / (1000 * scoreboardInfo.player[value].shotTimes.length)))
-                data["times"] = data["times"].map(value => `${Math.floor(value / 60)}:${value % 60}`)
+                data["times"] = data["times"].map(value => `${Math.floor(value / 60)}:${(value % 60) < 10 ? `0${value % 60}` : (value % 60)}`)
                 break;
             default:
                 break;
@@ -218,6 +228,13 @@
             scoreboardInfo.stat.visible = false;
         }, duration * 1000);
         scoreboardInfo = scoreboardInfo;
+    }
+
+    const handlePause = () => {
+        if (paused) {
+            lastEndOfBreak = Date.now();
+        }
+        paused = !paused;
     }
 
     $: {
@@ -245,7 +262,7 @@
     </div>
     {/each}
     <div class="flex flex-col items-center space-y-5">
-        <div class="grid grid-cols-3 gap-4 font-medium">
+        <div class="grid grid-cols-3 gap-4 font-medium { paused ? 'opacity-50' : '' }">
             <button on:click={ () => { handleBall(1) } } class="col-span-3 active:opacity-50 { foulMode ? 'opacity-20' : '' } flex justify-center"><ControlBall value={1}></ControlBall></button>
             <button on:click={ () => { handleBall(2) } } class="col-span-1 active:opacity-50 { foulMode ? 'opacity-20' : '' } justify-center"><ControlBall value={2}></ControlBall></button>
             <button on:click={ () => { handleBall(3) } } class="col-span-1 active:opacity-50 { foulMode ? 'opacity-20' : '' } justify-center"><ControlBall value={3}></ControlBall></button>
@@ -254,7 +271,7 @@
             <button on:click={ () => { handleBall(6) } } class="col-span-1 active:opacity-50 { foulMode ? 'brightness-[80%]' : '' } justify-center"><ControlBall value={6}></ControlBall></button>
             <button on:click={ () => { handleBall(7) } } class="col-span-1 active:opacity-50 { foulMode ? 'brightness-[80%]' : '' } justify-center"><ControlBall value={7}></ControlBall></button>
         </div>
-        <div class="grid grid-cols-4 gap-3 text-2xl">
+        <div class="grid grid-cols-4 gap-3 text-2xl { paused ? 'opacity-50' : '' }">
             <button on:click={ handleGame } class="w-18 active:opacity-50 p-2 col-span-1 blue-gradient">Game</button>
             <button on:click={ handleFoul } class="w-18 active:opacity-50 { foulMode ? 'saturate-50' : ''} p-2 col-span-1 blue-gradient">Foul</button>
             <button on:click={ handleEsc } class="w-18 active:opacity-50 p-2 col-span-1 blue-gradient">Undo</button>
@@ -278,7 +295,8 @@
             <input bind:value={ showStatLength } type="number" pattern="[0-9]*" class="w-12 border-2 border-white bg-transparent text-center flex justify-center p-2 text-xl">
             seconds
         </div>
-        <div class="flex justify-end w-full pr-5">
+        <div class="flex justify-between w-full px-5">
+            <button on:click={ handlePause } class="w-18 active:opacity-50 p-2 rose-gradient { paused ? 'saturate-50' : '' } text-xl">{ paused ? 'Unp' : 'P'}ause match</button>
             <button on:click={() => { showOverlaySettings = true; }} class="w-18 active:opacity-50 p-2 purple-gradient text-xl">Overlay settings</button>
         </div>
     </div>
@@ -331,6 +349,11 @@
 .green-gradient {
     background: linear-gradient(90deg, #9DB509 0%, #77BA43 61.45%); 
 }
+
+.rose-gradient {
+    background: linear-gradient(90deg, #b50959 0%, #ba4357 61.45%); 
+}
+
 
 .orange-gradient {
     background: linear-gradient(90deg, #d39311 0%, #ba8643 61.45%); 
