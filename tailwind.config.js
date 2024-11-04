@@ -28,6 +28,9 @@ export default {
         "black-ball": "#010101",
         "pending-break": "#DCFBCD",
         "active-yellow": "#ECFF0B"
+      },
+      screens: {
+        'xs': '390px'
       }
     },
   },

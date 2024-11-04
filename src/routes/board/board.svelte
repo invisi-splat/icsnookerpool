@@ -21,7 +21,7 @@
     <div class="h-[70%] lg:w-full overflow-scroll no-scrollbar">
         <div class="bg-[url('/images/peg.png')] bg-[size:1%] bg-repeat w-full min-h-[100%] p-3"> <!-- edit the min-h percentage to edit the buffer -->
             <div class="mt-5 flex justify-evenly items-baseline">
-                <h1 class="text-2xl text-high-break-yellow">HIGH BREAK BOARD</h1>
+                <h1 class="text-xl xs:text-2xl text-high-break-yellow">HIGH BREAK BOARD</h1>
                 <div class="relative flex justify-start">
                     <BoardDate month={ currentMonth.split(" ")[0] } year={ currentMonth.split(" ")[1] }></BoardDate>
                 </div>
@@ -60,7 +60,7 @@
     <div class="lg:w-full h-[30%] overflow-scroll no-scrollbar">
         <div class="bg-[url('/images/peg.png')] bg-[size:1%] bg-repeat min-h-[100%] lg:min-h-[100%] w-full p-3">
             <div class="mt-5 flex justify-evenly items-baseline">
-                <h1 class="text-2xl text-high-break-yellow">ANNUAL TOP THREE</h1>
+                <h1 class="text-xl xs:text-2xl text-high-break-yellow">ANNUAL TOP THREE</h1>
                 <div>
                     <BoardText text={ currentYear }></BoardText>
                 </div>

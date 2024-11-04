@@ -16,7 +16,7 @@ export const load: PageServerLoad = async ({ url }) => {
         `)
         .order("break", { ascending: false })
         .gt("submitted", `${currentYear}-${currentMonth < 9 ? '0' : ''}${currentMonth+1}-01`)
-        .lt("submitted", `${currentYear}-${currentMonth < 8 ? '0' : ''}${currentMonth+2}-01`);
+        .lt("submitted", `${currentMonth == 11 ? currentYear + 1 : currentYear}-${currentMonth < 8 || currentMonth == 11 ? '0' : ''}${currentMonth == 11 ? '1' : currentMonth+2}-01`);
 
     const startYear = currentMonth < 8 ? currentYear - 1 : currentYear;
     const nextYear = startYear + 1;

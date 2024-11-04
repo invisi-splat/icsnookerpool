@@ -4,8 +4,8 @@
 
 {#each [...text] as letter}
     {#if letter === letter.toUpperCase()}
-    <span class="text-2xl">{letter}</span>
+    <span class="text-xl xs:text-2xl">{letter}</span>
     {:else}
-    <span class="text-lg">{letter.toUpperCase()}</span>
+    <span class="text-base xs:text-lg">{letter.toUpperCase()}</span>
     {/if}
 {/each}
