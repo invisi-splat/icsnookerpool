@@ -5,6 +5,6 @@
     const borderColorMapping = ["border-unverified-grey", "border-red-ball", "border-yellow-ball", "border-green-ball", "border-brown-ball", "border-blue-ball", "border-pink-ball", "border-black-ball"]
 </script>
 
-<div class="ball rounded-full border-4 w-[4.5rem] h-[4.5rem] flex justify-center items-center text-5xl font-slab {textColorMapping[value]} {borderColorMapping[value]} bg-gray-200">
-    {value}
+<div class="ball rounded-full border-4 w-[4.5rem] h-[4.5rem] flex justify-center items-center text-5xl font-slab {textColorMapping[value % textColorMapping.length]} {borderColorMapping[value % borderColorMapping.length]} bg-gray-200">
+    {value > textColorMapping.length ? 'L' : value}
 </div>

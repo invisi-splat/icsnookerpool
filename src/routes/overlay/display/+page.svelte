@@ -121,6 +121,34 @@
                 <span class="font-bold">{ scoreboardInfo.stat.data.times[1]}</span>
             {/if}
         </div>
+        <div class="{ scoreboardInfo.stat.data.name === "lps" ? 'flex' : 'hidden' } h-10 min-w-[25%] bg-gray-300 bg-opacity-50 items-center justify-center gap-x-3 px-4">
+            {#if scoreboardInfo.stat.data.rate !== undefined}
+                <span class="font-bold">{ scoreboardInfo.stat.data.rate[0]}%</span>
+                <span>Long pot success</span>
+                <span class="font-bold">{ scoreboardInfo.stat.data.rate[1]}%</span>
+            {/if}
+        </div>
+        <div class="{ scoreboardInfo.stat.data.name === "ss" ? 'flex' : 'hidden' } h-10 min-w-[25%] bg-gray-300 bg-opacity-50 items-center justify-center gap-x-3 px-4">
+            {#if scoreboardInfo.stat.data.rate !== undefined}
+                <span class="font-bold">{ scoreboardInfo.stat.data.rate[0]}%</span>
+                <span>Safety success</span>
+                <span class="font-bold">{ scoreboardInfo.stat.data.rate[1]}%</span>
+            {/if}
+        </div> 
+        <div class="{ scoreboardInfo.stat.data.name === "ses" ? 'flex' : 'hidden' } h-10 min-w-[25%] bg-gray-300 bg-opacity-50 items-center justify-center gap-x-3 px-4">
+            {#if scoreboardInfo.stat.data.rate !== undefined}
+                <span class="font-bold">{ scoreboardInfo.stat.data.rate[0]}%</span>
+                <span>Snooker escape success</span>
+                <span class="font-bold">{ scoreboardInfo.stat.data.rate[1]}%</span>
+            {/if}
+        </div>
+        <div class="{ scoreboardInfo.stat.data.name === "fc" ? 'flex' : 'hidden' } h-10 min-w-[25%] bg-gray-300 bg-opacity-50 items-center justify-center gap-x-3 px-4">
+            {#if scoreboardInfo.stat.data.fouls !== undefined}
+                <span class="font-bold">{ scoreboardInfo.stat.data.fouls[0]}</span>
+                <span>Points given in fouls</span>
+                <span class="font-bold">{ scoreboardInfo.stat.data.fouls[1]}</span>
+            {/if}
+        </div>
         <div class="{ scoreboardInfo.stat.data.name === "cb" ? 'flex' : 'hidden' } h-10 w-2/5 bg-gray-300 bg-opacity-50 items-center justify-between">
             <span class="ml-4">Break <span class="font-bold">{ scoreboardInfo.stat.data.total }</span></span>
             <span class="mr-4 flex justify-normal gap-x-1">

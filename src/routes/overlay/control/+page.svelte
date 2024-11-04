@@ -22,9 +22,11 @@
         shotTimes: [],
         foulsCommitted: 0,
         successfulSafeties: 0,
-        failedSafeties: 0,
+        totalSafeties: 0,
         successfulLongpots: 0,
-        failedLongpots: 0
+        totalLongpots: 0,
+        successfulEscapes: 0,
+        totalEscapes: 0,
     }
 
     const emptyScoreboard = {
@@ -57,6 +59,9 @@
     let lastEndOfBreak = Date.now();
 
     let paused = false;
+
+    // Enables a special mode -- a secondary menu of sorts.
+    let shift = false;
 
     console.log(scoreboardInfo);
 
@@ -113,9 +118,20 @@
         scoreboardInfo = scoreboardInfo;
         localStorage.removeItem("calculatedStats");
         calculatedStats = structuredClone(emptyStats);
+        shift = false;
     }
 
     let foulMode = false;
+    let snookerMode = false;
+
+    const handleShift = () => {
+        if (paused) { return; }
+        if (foulMode) {
+            snookerMode = !snookerMode;
+            return;
+        }
+        shift = !shift;
+    }
 
     const handleFoul = () => {
         if (paused) { return; }
@@ -123,7 +139,7 @@
     }
 
     const handleEsc = () => {
-        if (paused) { return; }
+        if (paused || foulMode) { return; }
         scoreboardHistory.pop();
         scoreboardInfo = scoreboardHistory.pop();
         statsHistory.pop();
@@ -131,7 +147,7 @@
     }
 
     const handleEnter = () => {
-        if (paused) { return; }
+        if (paused || foulMode) { return; }
         scoreboardInfo.player[scoreboardInfo.activeTurn].currentBreak = [];
         scoreboardInfo.player[scoreboardInfo.activeTurn].shotTimes.push(Date.now() - lastEndOfBreak);
         lastEndOfBreak = Date.now();
@@ -144,10 +160,17 @@
     const handleBall = (value: number) => {
         if (paused) { return; }
         if (foulMode) {
-            if (value < 4) { return; }
+            if (value !== 0 && value < 4) { return; }
             const activeTurn = scoreboardInfo.activeTurn;
             scoreboardInfo.player[(activeTurn + 1) % 2].currentScore += value;
-            scoreboardInfo.player[activeTurn].foulsCommitted += 1;
+            if (snookerMode) {
+                if (value === 0) {
+                    scoreboardInfo.player[activeTurn].successfulEscapes++;
+                }
+                scoreboardInfo.player[activeTurn].totalEscapes++;
+                snookerMode = false;
+            }
+            scoreboardInfo.player[activeTurn].foulsCommitted += value;
             handleEnter();
             foulMode = !foulMode;
         } else {
@@ -165,8 +188,31 @@
             scoreboardInfo.player[scoreboardInfo.activeTurn].currentBreak.push(value);
             scoreboardInfo.player[scoreboardInfo.activeTurn].currentScore += value;
         }
+        if (shift) {
+            if (value !== 0) {
+                scoreboardInfo.player[scoreboardInfo.activeTurn].successfulLongpots++;
+                scoreboardInfo.player[scoreboardInfo.activeTurn].totalLongpots++;
+            } else {
+                scoreboardInfo.player[scoreboardInfo.activeTurn].totalLongpots++;
+                handleEnter();
+            }
+            shift = false;
+        }
         refreshStats();
         scoreboardInfo = scoreboardInfo;
+    }
+
+    const handleSafety = () => {
+        scoreboardInfo.player[scoreboardInfo.activeTurn].successfulSafeties++;
+        scoreboardInfo.player[scoreboardInfo.activeTurn].totalSafeties++;
+        handleEnter();
+        shift = false;
+    }
+
+    const handleUnsafe = () => {
+        scoreboardInfo.player[scoreboardInfo.activeTurn].totalSafeties++;
+        handleEnter();
+        shift = false;
     }
 
     let showStatLength = 0;
@@ -217,6 +263,40 @@
                 data["times"] = [0, 1].map(value => Math.floor(scoreboardInfo.player[value].shotTimes.reduce((a, b) => a + b, 0) / (1000 * scoreboardInfo.player[value].shotTimes.length)))
                 data["times"] = data["times"].map(value => `${Math.floor(value / 60)}:${(value % 60) < 10 ? `0${value % 60}` : (value % 60)}`)
                 break;
+            case "lps":
+                data["side"] = 1;
+                data["rate"] = [0, 1].map(value => {
+                    if (scoreboardInfo.player[value].totalLongpots !== 0) {
+                        return Math.round(100 * (scoreboardInfo.player[value].successfulLongpots / (scoreboardInfo.player[value].totalLongpots)))
+                    } else {
+                        return 100;
+                    }
+                });
+                break;
+            case "ss":
+                data["side"] = 1;
+                data["rate"] = [0, 1].map(value => {
+                    if (scoreboardInfo.player[value].totalSafeties !== 0) {
+                        return Math.round(100 * (scoreboardInfo.player[value].successfulSafeties / (scoreboardInfo.player[value].totalSafeties)))
+                    } else {
+                        return 100;
+                    }
+                });
+                break;
+            case "ses":
+                data["side"] = 1;
+                data["rate"] = [0, 1].map(value => {
+                    if (scoreboardInfo.player[value].totalEscapes !== 0) {
+                        return Math.round(100 * (scoreboardInfo.player[value].successfulEscapes / (scoreboardInfo.player[value].totalEscapes)))
+                    } else {
+                        return 100;
+                    }
+                });
+                break;
+            case "fc":
+                data["side"] = 1;
+                data["fouls"] = [0, 1].map(value => scoreboardInfo.player[value].foulsCommitted);
+                break;
             default:
                 break;
         }
@@ -266,20 +346,35 @@
     {/each}
     <div class="flex flex-col items-center space-y-5">
         <div class="grid grid-cols-3 gap-4 font-medium { paused ? 'opacity-50' : '' }">
-            <button on:click={ () => { handleBall(1) } } class="col-span-3 active:opacity-50 { foulMode ? 'opacity-20' : '' } flex justify-center"><ControlBall value={1}></ControlBall></button>
-            <button on:click={ () => { handleBall(2) } } class="col-span-1 active:opacity-50 { foulMode ? 'opacity-20' : '' } justify-center"><ControlBall value={2}></ControlBall></button>
-            <button on:click={ () => { handleBall(3) } } class="col-span-1 active:opacity-50 { foulMode ? 'opacity-20' : '' } justify-center"><ControlBall value={3}></ControlBall></button>
-            <button on:click={ () => { handleBall(4) } } class="col-span-1 active:opacity-50 { foulMode ? 'brightness-[80%]' : '' } justify-center"><ControlBall value={4}></ControlBall></button>
-            <button on:click={ () => { handleBall(5) } } class="col-span-1 active:opacity-50 { foulMode ? 'brightness-[80%]' : '' } justify-center"><ControlBall value={5}></ControlBall></button>
-            <button on:click={ () => { handleBall(6) } } class="col-span-1 active:opacity-50 { foulMode ? 'brightness-[80%]' : '' } justify-center"><ControlBall value={6}></ControlBall></button>
-            <button on:click={ () => { handleBall(7) } } class="col-span-1 active:opacity-50 { foulMode ? 'brightness-[80%]' : '' } justify-center"><ControlBall value={7}></ControlBall></button>
+            {#if shift}
+                <button on:click={ () => { handleBall(0) } } class="col-span-1 active:opacity-50 { foulMode ? 'opacity-20' : '' } flex justify-center"><ControlBall value={0}></ControlBall></button>
+            {/if}
+            <button on:click={ () => { handleBall(1) } } class="{shift ? 'col-span-1' : 'col-span-3'} active:opacity-50 { foulMode ? 'opacity-20' : '' } flex justify-center"><ControlBall value={!shift ? 1 : 9}></ControlBall></button>
+            {#if shift}
+                <div class="col-span-1"></div> <!--padding-->
+            {/if}
+            <button on:click={ () => { handleBall(2) } } class="col-span-1 active:opacity-50 { foulMode ? 'opacity-20' : '' } justify-center"><ControlBall value={!shift ? 2 : 10}></ControlBall></button>
+            <button on:click={ () => { handleBall(3) } } class="col-span-1 active:opacity-50 { foulMode ? 'opacity-20' : '' } justify-center"><ControlBall value={!shift ? 3 : 11}></ControlBall></button>
+            <button on:click={ () => { handleBall(4) } } class="col-span-1 active:opacity-50 { foulMode ? 'brightness-[80%]' : '' }  { snookerMode ? 'brightness-[60%]' : ''} justify-center"><ControlBall value={!shift ? 4 : 12}></ControlBall></button>
+            <button on:click={ () => { handleBall(5) } } class="col-span-1 active:opacity-50 { foulMode ? 'brightness-[80%]' : '' }  { snookerMode ? 'brightness-[60%]' : ''} justify-center"><ControlBall value={!shift ? 5 : 13}></ControlBall></button>
+            <button on:click={ () => { handleBall(6) } } class="col-span-1 active:opacity-50 { foulMode ? 'brightness-[80%]' : '' }  { snookerMode ? 'brightness-[60%]' : ''} justify-center"><ControlBall value={!shift ? 6 : 14}></ControlBall></button>
+            <button on:click={ () => { handleBall(7) } } class="col-span-1 active:opacity-50 { foulMode ? 'brightness-[80%]' : '' }  { snookerMode ? 'brightness-[60%]' : ''} justify-center"><ControlBall value={!shift ? 7 : 15}></ControlBall></button>
         </div>
-        <div class="grid grid-cols-4 gap-3 text-2xl { paused ? 'opacity-50' : '' }">
-            <button on:click={ handleGame } class="w-18 active:opacity-50 p-2 col-span-1 blue-gradient">Game</button>
-            <button on:click={ handleFoul } class="w-18 active:opacity-50 { foulMode ? 'saturate-50' : ''} p-2 col-span-1 blue-gradient">Foul</button>
-            <button on:click={ handleEsc } class="w-18 active:opacity-50 p-2 col-span-1 blue-gradient">Undo</button>
-            <button on:click={ handleEnter } class="w-18 active:opacity-50 p-2 col-span-1 blue-gradient">Enter</button>
-        </div>
+        {#if !shift}
+            <div class="grid grid-cols-4 gap-3 text-2xl { paused ? 'opacity-50' : '' }">
+                <button on:click={ handleShift } class="w-18 active:opacity-50 p-2 col-span-1 blue-gradient">Shift</button>
+                <button on:click={ handleFoul } class="w-18 active:opacity-50 { foulMode ? 'saturate-50' : ''} p-2 col-span-1 blue-gradient">{ snookerMode ? 'Snoo.' : 'Foul'}</button>
+                <button on:click={ handleEsc } class="w-18 active:opacity-50 p-2 col-span-1 blue-gradient">Undo</button>
+                <button on:click={ handleEnter } class="w-18 active:opacity-50 p-2 col-span-1 blue-gradient">Enter</button>
+            </div>
+        {:else}
+            <div class="grid grid-cols-4 gap-3 text-2xl { paused ? 'opacity-50' : '' }">
+                <button on:click={ handleShift } class="w-18 active:opacity-50 p-2 col-span-1 brightness-125 blue-gradient">Shift</button>
+                <button on:click={ handleGame } class="w-18 active:opacity-50 p-2 col-span-1 blue-gradient">Game</button>
+                <button on:click={ handleSafety } class="w-18 active:opacity-50 p-2 col-span-1 blue-gradient">Safe</button>
+                <button on:click={ handleUnsafe } class="w-18 active:opacity-50 p-2 col-span-1 blue-gradient">Unsafe</button>
+            </div>
+        {/if}
         <select bind:value={ selectedStat } class="mx-4 border-2 border-white bg-transparent w-5/6 text-center flex justify-center p-2 text-xl">
             <option value="cb" >Current break</option>
             <option value="p1bar" >Player 1 behind/ahead remaining</option>
