@@ -111,6 +111,8 @@
         }
         scoreboardInfo.activeTurn = (scoreboardInfo.activeTurn + 1) % 2;
         scoreboardInfo = scoreboardInfo;
+        localStorage.removeItem("calculatedStats");
+        calculatedStats = structuredClone(emptyStats);
     }
 
     let foulMode = false;
@@ -153,12 +155,13 @@
                 scoreboardInfo.onColourAfterRed = true;
                 calculatedStats.remainingBalls[1]--;
             } else {
-                if (calculatedStats.remainingBalls[1] <= 0) {
+                if (calculatedStats.remainingBalls[1] <= 0 && !scoreboardInfo.onColourAfterRed) {
                     calculatedStats.remainingBalls[value]--;
                 } else {
                     scoreboardInfo.onColourAfterRed = false;
                 }
             }
+            console.log(calculatedStats.remainingBalls);
             scoreboardInfo.player[scoreboardInfo.activeTurn].currentBreak.push(value);
             scoreboardInfo.player[scoreboardInfo.activeTurn].currentScore += value;
         }
@@ -206,7 +209,7 @@
                 data["diff"] = Math.abs(data["diff"]);
                 data["remaining"] = calculatedStats.remainingBalls[1] > 0 && scoreboardInfo.onColourAfterRed ? 7 : 0;
                 for (const [ball, count] of calculatedStats.remainingBalls.entries()) {
-                    data["remaining"] += ball === 1 ? count * 8 : ball
+                    data["remaining"] += ball === 1 ? count * 8 : ball * count
                 }
                 break;
             case "ast":
@@ -248,7 +251,7 @@
     }
 
     onMount(() => {
-        // connectToPeer();
+        scoreboardInfo.stat.visible = false;
     })
 </script>
 
