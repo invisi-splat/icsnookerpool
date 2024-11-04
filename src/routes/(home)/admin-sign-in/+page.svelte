@@ -1,7 +1,7 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import phoenixImg from "$lib/assets/phoenix.png";
-  import { checkLoggedIn } from "$lib/functions/checkLoggedIn";
+    import { checkLoggedIn } from "$lib/functions/checkLoggedIn";
     import { supabase } from "$lib/supabaseClient";
     import { onMount } from "svelte";
 

@@ -9,32 +9,25 @@ export const load: () => { ballInfo: BallInfo[] } = () => {
                 delay: 200
             },
             {
-                symbol: "W",
-                description: "Whatsapp group chat",
-                ballColor: "bg-whatsapp-green",
-                linkTo: "https://chat.whatsapp.com/EFJm97Ri4PGL5VFhyMVUSj",
-                delay: 400
-            },
-            {
                 symbol: "H",
                 description: "High break board",
                 ballColor: "bg-black",
                 linkTo: "/board",
-                delay: 600
+                delay: 400
             },
             {
                 symbol: "I",
                 description: "Instagram",
                 ballColor: "instagram",
                 linkTo: "https://www.instagram.com/icusnooker/",
-                delay: 800
+                delay: 600
             },
             {
                 symbol: "O",
                 description: "Streaming tournament overlay",
                 ballColor: "bg-red-800",
                 linkTo: "/overlay",
-                delay: 1000
+                delay: 800
             }
         ]
 	};
