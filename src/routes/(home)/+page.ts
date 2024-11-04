@@ -28,6 +28,13 @@ export const load: () => { ballInfo: BallInfo[] } = () => {
                 ballColor: "instagram",
                 linkTo: "https://www.instagram.com/icusnooker/",
                 delay: 800
+            },
+            {
+                symbol: "O",
+                description: "Streaming tournament overlay",
+                ballColor: "bg-red-800",
+                linkTo: "/overlay",
+                delay: 1000
             }
         ]
 	};

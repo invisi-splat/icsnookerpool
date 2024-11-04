@@ -23,7 +23,7 @@
     <title>Home | IC Snooker & Pool</title> 
 </svelte:head>
 
-<div class="flex flex-col lg:flex-row items-center lg:mt-10 lg:justify-around mb-24">
+<div class="flex flex-col lg:flex-row items-center lg:mt-10 lg:justify-around lg:items-start mb-24">
     {#each balls as ball}
         {#if showTitle}
             <Ball ballInfo={ball}></Ball>

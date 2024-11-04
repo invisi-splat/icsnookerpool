@@ -11,8 +11,6 @@
 
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     
-    onMount(() => { console.log(month) })
-    
     function loadNewMonth() {
         goto(`/board?month=${selectedMonth}&year=${selectedYear}`)
     }
@@ -21,7 +19,7 @@
 </script>
 
 <div>
-    <select style={ `width: ${month.length * 20}px` } bind:value={selectedMonth} class="bg-opacity-0 bg-black h-fit text-2xl text-right-last mr-2" on:change={ loadNewMonth }>
+    <select style={ `width: ${month.length * 1.15 + 1}ch` } bind:value={selectedMonth} class="bg-opacity-0 bg-black h-fit text-2xl text-right-last mr-2" on:change={ loadNewMonth }>
         {#each monthNames as monthName}
         <option value={ monthNames.indexOf(monthName) } selected={ monthName === month } class="bg-gray-500 text-2xl text-right"><BoardText text={ monthName }></BoardText></option>
         {/each}

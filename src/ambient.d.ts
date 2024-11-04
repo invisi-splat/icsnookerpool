@@ -1,4 +1,4 @@
-type BallColor = "bg-union-purple" | "bg-whatsapp-green" | "bg-black" | "instagram" | "bg-white"
+type BallColor = "bg-union-purple" | "bg-whatsapp-green" | "bg-black" | "instagram" | "bg-red-800"
 
 type BallInfo = {
     symbol: string,
