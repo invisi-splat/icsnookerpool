@@ -9,7 +9,10 @@
     let errorMessage = "";
     let statusMessage = "";
     let successMessage = "";
-    let peer = new Peer({ debug: 3 });
+    let peer = new Peer({ debug: 3, config: { 'iceServers': [
+            { 'url': 'stun:stun.l.google.com:19302' }  
+          ]}
+        });
 
     const scoreboardHistory = [];
     const statsHistory = [];
@@ -76,18 +79,10 @@
             statusMessage = "";
             successMessage = "Connected successfully!";
 
-            conn.send(scoreboardInfo);
+            // conn.send(scoreboardInfo);
         });
 
         localStorage["p2pid"] = p2pid;
-
-        setTimeout(() => {
-            statusMessage = "";
-            if (!conn.open) {
-                conn.close();
-                errorMessage = "Connection timed out.";
-            }
-        }, 10000);
     }
 
     const resetAll = () => {
@@ -324,7 +319,7 @@
         localStorage["scoreboardInfo"] = JSON.stringify(scoreboardInfo);
         localStorage["calculatedStats"] = JSON.stringify(calculatedStats);
         if (conn !== null && conn.open) {
-            conn.send(scoreboardInfo);
+            // conn.send(scoreboardInfo);
         }
         scoreboardHistory.push(structuredClone(scoreboardInfo));
         statsHistory.push(structuredClone(calculatedStats));
