@@ -28,10 +28,10 @@
             .eq("player", sBreak.player.user_id)
             .eq("is_best", true)
             .gt("submitted", `${currentYear}-${currentMonth < 9 ? '0' : ''}${currentMonth+1}-01`)
-            .lt("submitted", `${currentYear}-${currentMonth < 8 ? '0' : ''}${currentMonth+2}-01`)
+            .lt("submitted", `${currentMonth == 11 ? currentYear + 1 : currentYear}-${currentMonth < 8 || currentMonth == 11 ? '0' : ''}${currentMonth == 11 ? '1' : currentMonth+2}-01`)
             .order("break", { ascending: false })
             .gt("submitted", `${currentYear}-${currentMonth < 9 ? '0' : ''}${currentMonth+1}-01`)
-            .lt("submitted", `${currentYear}-${currentMonth < 8 ? '0' : ''}${currentMonth+2}-01`)
+            .lt("submitted", `${currentMonth == 11 ? currentYear + 1 : currentYear}-${currentMonth < 8 || currentMonth == 11 ? '0' : ''}${currentMonth == 11 ? '1' : currentMonth+2}-01`)
             .range(0, 2);
         
         const bestBreaks = bestBreaksReq.data?.concat(sBreak);
@@ -49,7 +49,7 @@
         } else if (bestBreaks[3] === sBreak) {
             const { error } = await supabase
                 .from("breaks")
-                .update({ verified: true })
+                .update({ verified: true, is_best: false })
                 .eq("id", sBreak.id)
             if (error) {
                 message[index] = error.message;
