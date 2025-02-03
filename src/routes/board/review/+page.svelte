@@ -9,7 +9,11 @@
     import { supabase } from "$lib/supabaseClient";
     import BreakForm from "../breakForm.svelte";
 
-    export let data: PageData;
+    interface Props {
+        data: PageData;
+    }
+
+    let { data }: Props = $props();
 
     onMount(() => {
         checkLoggedIn(() => {}, () => {
@@ -89,12 +93,12 @@
         processedBreak[index] = true;
     }
 
-    let showDetailedBreak: Boolean[] = [];
-    let processedBreak: Boolean[] = [];
-    let message: string[] = [];
+    let showDetailedBreak: Boolean[] = $state([]);
+    let processedBreak: Boolean[] = $state([]);
+    let message: string[] = $state([]);
 
-    let activeBreakIndex: number;
-    let activeBreak: [BreakEntry, number] | undefined;
+    let activeBreakIndex: number = $state();
+    let activeBreak: [BreakEntry, number] | undefined = $state();
 </script>
 
 <div class="lg:hidden h-dvh overflow-y-scroll text-white">
@@ -105,7 +109,7 @@
         {#each data.unverifiedBreaks as sBreak, index}
         {#if !processedBreak[index]}
             <div class="w-full flex flex-col justify-center items-center">
-                <button type="button" on:click={ () => { showDetailedBreak[index] = !showDetailedBreak[index] }} class="w-4/5 bg-pending-break text-black cursor-pointer active:saturate-50 shadow-[3px_3px] z-50">
+                <button type="button" onclick={() => { showDetailedBreak[index] = !showDetailedBreak[index] }} class="w-4/5 bg-pending-break text-black cursor-pointer active:saturate-50 shadow-[3px_3px] z-50">
                     <div class="flex justify-between text-xl p-5 pb-1">
                         <p>{ sBreak.player.given_name } { sBreak.player.last_name }</p>
                         <p class="font-bold">{ sBreak.break }</p>
@@ -127,8 +131,8 @@
                         {/if}
                     </div>
                     <div class="flex justify-end text-xl mt-3 gap-x-4 font-bold">
-                        <button on:click={ () => handleReject(sBreak, index) } type="button" class="text-red-ball active:saturate-50">Reject</button>
-                        <button on:click={ () => handleApprove(sBreak, index) } type="button" class="text-green-ball active:saturate-50">Approve</button>
+                        <button onclick={() => handleReject(sBreak, index)} type="button" class="text-red-ball active:saturate-50">Reject</button>
+                        <button onclick={() => handleApprove(sBreak, index)} type="button" class="text-green-ball active:saturate-50">Approve</button>
                     </div>
                     {#if message[index] && message[index] !== ""}
                         <div>{ message[index] }</div>
@@ -150,7 +154,7 @@
         <div class="flex flex-col justify-center items-center gap-y-5 my-10">
             {#each data.unverifiedBreaks as sBreak, index}
             {#if !processedBreak[index]}
-                <button on:click={ () => { activeBreakIndex = index; activeBreak = [sBreak, index] } } type="button" class="{ activeBreakIndex === index ? 'active' : 'inactive' } w-full text-black text-left text-xl p-4 grid grid-cols-10">
+                <button onclick={() => { activeBreakIndex = index; activeBreak = [sBreak, index] }} type="button" class="{ activeBreakIndex === index ? 'active' : 'inactive' } w-full text-black text-left text-xl p-4 grid grid-cols-10">
                     <p class="col-span-4">{sBreak.player.given_name} {sBreak.player.last_name}</p>
                     <p class="col-span-1 font-bold">{sBreak.break}</p>
                     <p class="col-span-3 font-light">{toNiceDate(Date.parse(sBreak.submitted))}</p>

@@ -4,19 +4,23 @@
     import { fade } from "svelte/transition";
     import { toNiceDate } from "$lib/functions/checkLoggedIn";
 
-    export let showAll: Boolean;
-    export let breakInfo: BreakInfo;
+    interface Props {
+        showAll: Boolean;
+        breakInfo: BreakInfo;
+    }
+
+    let { showAll, breakInfo }: Props = $props();
 
     const HOURS: number = 18
     const NEW_THRESHOLD: number = 1000 * 60 * 60 * HOURS
-    let showDetailedBreak: Boolean[] = [] 
+    let showDetailedBreak: Boolean[] = $state([]) 
 </script>
 
 {#each breakInfo as sBreak, index}
     {#if (sBreak.verified && sBreak.is_best) || showAll}
         <button type="button"
                 class="flex justify-between {showDetailedBreak[index - 1] ? 'mt-2' : 'mt-6'} w-full {!sBreak.verified ? 'text-unverified-grey' : Date.now() - Date.parse(sBreak.submitted) < NEW_THRESHOLD ? 'text-new-break-blue' : !sBreak.is_best ? 'text-not-best-grey' : '' }"
-                transition:fade on:click={() => {showDetailedBreak[index] = !showDetailedBreak[index]}}>
+                transition:fade onclick={() => {showDetailedBreak[index] = !showDetailedBreak[index]}}>
             <div class="flex items-center">
                 {#if sBreak.player_info.status === "alumnus"}
                 <div class="inline-block w-1 h-1 rounded-full bg-almost-white mx-5"></div>

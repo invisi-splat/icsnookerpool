@@ -6,9 +6,13 @@
     import { onMount } from "svelte";
     import { checkLoggedIn } from "$lib/functions/checkLoggedIn";
 	
-	export let data: PageData;
-    let showAllValue: boolean;
-    let loggedIn = false;
+    interface Props {
+        data: PageData;
+    }
+
+    let { data }: Props = $props();
+    let showAllValue: boolean = $state(false);
+    let loggedIn = $state(false);
     
     showAll.subscribe(v => showAllValue = v)
     onMount(async () => {
@@ -30,7 +34,7 @@
         <h1 class="text-4xl mb-3">IC Snooker & Pool Society</h1>
         <h1 class="text-3xl">High break board</h1>
         <div class="flex gap-x-10"> <!-- TODO: Fix the buttons moving when the text changes -->
-            <button class="gold-button mt-5 py-2 px-4 text-xl" type="button" on:click={() => {showAll.update(x => !x)}}>
+            <button class="gold-button mt-5 py-2 px-4 text-xl" type="button" onclick={() => {showAll.update(x => !x)}}>
                 {#if showAllValue}
                     Hide all breaks
                 {:else}

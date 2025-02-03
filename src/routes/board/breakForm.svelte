@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { run } from 'svelte/legacy';
+
     import BoardBall from "./boardBall.svelte";
     import { supabase } from "$lib/supabaseClient";
     import { scale } from "svelte/transition";
@@ -15,22 +17,36 @@
         };
     }
 
-    export let editable: boolean = true;
 
-    export let name: string = "";
-    export let selectedUserId: string = "";
-    export let breakTotal: number = 0;
-    export let ballsPotted: number[] = []; 
-    export let locationPrefix: string = "table";
-    export let location: string = "";
-    $: breakTotal = ballsPotted.length === 0 ? breakTotal : ballsPotted.reduce((a, b) => a + b, 0);
+    interface Props {
+        editable?: boolean;
+        name?: string;
+        selectedUserId?: string;
+        breakTotal?: number;
+        ballsPotted?: number[];
+        locationPrefix?: string;
+        location?: string;
+    }
 
-    let badSubmission: boolean = false;
-    let errorMessage: string;
-    let goodSubmission: boolean = false;
-    let successMessage: string;
-    let matchingUsers: User[] = []; 
-    let confirmNewUser: boolean = false;
+    let {
+        editable = true,
+        name = $bindable(""),
+        selectedUserId = $bindable(""),
+        breakTotal = $bindable(0),
+        ballsPotted = $bindable([]),
+        locationPrefix = $bindable("table"),
+        location = $bindable("")
+    }: Props = $props();
+    run(() => {
+        breakTotal = ballsPotted.length === 0 ? breakTotal : ballsPotted.reduce((a, b) => a + b, 0);
+    });
+
+    let badSubmission: boolean = $state(false);
+    let errorMessage: string = $state();
+    let goodSubmission: boolean = $state(false);
+    let successMessage: string = $state();
+    let matchingUsers: User[] = $state([]); 
+    let confirmNewUser: boolean = $state(false);
 
     const dispatch = createEventDispatcher();
     
@@ -154,11 +170,11 @@
     <div class="grid grid-cols-8 gap-y-5 items-center">
         <div class="text-red-ball text-xl col-span-3">Name</div>
         <div class="col-span-5 relative { editable ? '' : 'pointer-events-none' }">
-            <input on:keydown={debounce(handleQueryUsers)} bind:value={name} type="text" class="w-full { selectedUserId ? 'text-gray-500' : 'text-black' } text-xl { editable ? 'bg-[#B1B1B1]' : 'bg-[#DCFBCD]' } border-black border-b" />
+            <input onkeydown={debounce(handleQueryUsers)} bind:value={name} type="text" class="w-full { selectedUserId ? 'text-gray-500' : 'text-black' } text-xl { editable ? 'bg-[#B1B1B1]' : 'bg-[#DCFBCD]' } border-black border-b" />
             {#if matchingUsers.length > 0 && !selectedUserId}
             <div class="absolute overflow-clip p-1 text-black bg-white opacity-80 text-sm w-full top-10 z-50 flex flex-col items-start">
                 {#each matchingUsers as matchingUser}
-                    <button type="button" on:click={() => { selectedUserId = matchingUser.user_id; name = matchingUser.given_name + " " + matchingUser.last_name; confirmNewUser = false; }} class="active:bg-gray-400">
+                    <button type="button" onclick={() => { selectedUserId = matchingUser.user_id; name = matchingUser.given_name + " " + matchingUser.last_name; confirmNewUser = false; }} class="active:bg-gray-400">
                         { matchingUser.given_name } { matchingUser.last_name }
                     </button>
                 {/each}
@@ -181,26 +197,26 @@
         <div class="text-black col-span-full text-xl">Balls potted</div>
         <div class="flex justify-center gap-2 col-span-full flex-wrap">
             {#each ballsPotted as value, i}
-                <button type="button" class="hover:cursor-pointer { !editable ? 'pointer-events-none' : '' }" on:click={() => {ballsPotted.splice(i, 1); ballsPotted = ballsPotted;}}>
+                <button type="button" class="hover:cursor-pointer { !editable ? 'pointer-events-none' : '' }" onclick={() => {ballsPotted.splice(i, 1); ballsPotted = ballsPotted;}}>
                     <BoardBall value={value}></BoardBall>
                 </button>
             {/each}
         </div>
         <div class="flex justify-center gap-x-2 col-span-full">
             {#each {length: 7} as _, i}
-                <button type="button" class="hover:cursor-pointer { !editable ? 'pointer-events-none' : '' }" on:click={() => {ballsPotted.push(i + 1); ballsPotted = ballsPotted;}}>
+                <button type="button" class="hover:cursor-pointer { !editable ? 'pointer-events-none' : '' }" onclick={() => {ballsPotted.push(i + 1); ballsPotted = ballsPotted;}}>
                     <BoardBall value={i + 1}></BoardBall>
                 </button>
             {/each}
         </div>
         {#if editable}
         <div class="col-span-full text-right text-2xl">
-            <button type="button" on:click={handleFormSubmit} class="text-[#000587]">Submit</button>
+            <button type="button" onclick={handleFormSubmit} class="text-[#000587]">Submit</button>
         </div>
         {:else}
         <div class="col-span-full flex justify-end gap-6 text-2xl">
-            <button type="button" on:click={() => { dispatch("reject") }} class="text-red-ball">Reject</button>
-            <button type="button" on:click={() => { dispatch("approve") }} class="text-green-ball">Approve</button>
+            <button type="button" onclick={() => { dispatch("reject") }} class="text-red-ball">Reject</button>
+            <button type="button" onclick={() => { dispatch("approve") }} class="text-green-ball">Approve</button>
         </div>
         {/if}
         {#if badSubmission}

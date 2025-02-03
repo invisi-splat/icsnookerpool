@@ -4,10 +4,14 @@
     import { supabase } from "$lib/supabaseClient";
     import { onMount } from "svelte";
     
-    export let data: PageData;
+    interface Props {
+        data: PageData;
+    }
+
+    let { data }: Props = $props();
 
     const balls: BallInfo[] = data.ballInfo
-    let showTitle: boolean = false
+    let showTitle: boolean = $state(false)
 
     onMount(async () => {
         const { data, error } = await supabase.auth.getSession();
