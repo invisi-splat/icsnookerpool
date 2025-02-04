@@ -13,8 +13,8 @@
     let successMessage = $state("");
     let peer = new Peer({ debug: 3 });
 
-    const scoreboardHistory = [];
-    const statsHistory = [];
+    const scoreboardHistory: any = [];
+    const statsHistory: any = [];
 
     const emptyPlayer = {
         name: "",
@@ -53,7 +53,7 @@
     }
 
     let scoreboardInfoStr = localStorage["scoreboardInfo"] ?? JSON.stringify(structuredClone(emptyScoreboard));
-    let scoreboardInfo = $state(JSON.parse(scoreboardInfoStr));
+    let scoreboardInfo: typeof emptyScoreboard = $state(JSON.parse(scoreboardInfoStr));
 
     let calculatedStatsStr = localStorage["calculatedStats"] ?? JSON.stringify(structuredClone(emptyStats));
     let calculatedStats = $state(JSON.parse(calculatedStatsStr));
@@ -64,8 +64,6 @@
 
     // Enables a special mode -- a secondary menu of sorts.
     let shift = $state(false);
-
-    console.log(scoreboardInfo);
 
     const connectToPeer = () => {
         errorMessage = "";
@@ -186,7 +184,6 @@
                     scoreboardInfo.onColourAfterRed = false;
                 }
             }
-            console.log(calculatedStats.remainingBalls);
             scoreboardInfo.player[scoreboardInfo.activeTurn].currentBreak.push(value);
             scoreboardInfo.player[scoreboardInfo.activeTurn].currentScore += value;
         }
@@ -322,15 +319,16 @@
         paused = !paused;
     }
 
-    run(() => {
+    $effect(() => {
+        console.log("UPDATE")
         localStorage["scoreboardInfo"] = JSON.stringify(scoreboardInfo);
         localStorage["calculatedStats"] = JSON.stringify(calculatedStats);
         if (conn !== null && conn.open) {
             conn.send(scoreboardInfo);
         }
-        scoreboardHistory.push(structuredClone(scoreboardInfo));
-        statsHistory.push(structuredClone(calculatedStats));
-    });
+        scoreboardHistory.push($state.snapshot(scoreboardInfo));
+        statsHistory.push($state.snapshot(calculatedStats));
+    }) 
 
     onMount(() => {
         scoreboardInfo.stat.visible = false;
