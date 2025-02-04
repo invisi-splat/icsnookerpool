@@ -26,7 +26,13 @@ export const load: PageServerLoad = async ({ params }) => {
     })
   }
 
-  console.log(breakInfo.data)
+  const userInfo = await supabase
+    .from("users")
+    .select()
+    //@ts-expect-error similar to above
+    .eq("user_id", params.slug)
+
+  if (userInfo.error) throw userInfo.error;
   
-  return { breakInfo: breakInfo.data, name: "Om Goswamy" }
+  return { breakInfo: breakInfo.data, userInfo: userInfo.data[0] }
 }

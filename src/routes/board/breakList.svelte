@@ -51,6 +51,9 @@
                     <BoardBall value={0}></BoardBall>
                 {/if}
             </div>
+            <a href="/board/stats/{sBreak.player.user_id}" class="text-[#91a8ae] border-2 border-[#91a8ae] py-1 px-3">
+                <BoardText text="View {sBreak.player.given_name}'s stats"></BoardText>
+            </a>
         </div>
         {/if}
     {/if}

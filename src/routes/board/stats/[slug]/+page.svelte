@@ -1,11 +1,10 @@
 <script lang="ts">
-  import { breakChartAction } from "./charts";
   import type { PageProps } from './$types';
   import type { Action } from "svelte/action";
   import Chart from "chart.js/auto";
   import 'chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm';
-  import { onMount } from "svelte";
   import dayjs from "dayjs";
+  import { onMount } from 'svelte';
 
 	let { data }: PageProps = $props();
   
@@ -75,10 +74,14 @@
     })
   }
 
+  onMount(() => {
+    console.log(data)
+  })
+
 </script>
 
 <div class="w-full flex flex-col justify-center items-center px-5 py-2 text-almost-white">
-  <p class="sm:text-3xl text-2xl mb-5">{ data.name } <span class="font-bold text-white">{ "(#1)" }</span></p>
+  <p class="sm:text-3xl text-2xl mb-5">{ data.userInfo.given_name } { data.userInfo.last_name } <span class="font-bold text-white">{ "(#1)" }</span></p>
   <div class="sm:hidden grid grid-cols-4 w-3/4 mb-5">
     <p class="col-span-3">Highest break</p>
     <p class="col-span-1 justify-end font-bold">{ maximumBreak.break }</p>
