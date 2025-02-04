@@ -1,18 +1,20 @@
 <script lang="ts">
+    import { run } from 'svelte/legacy';
+
     import { onMount } from "svelte";
     import ControlBall from "./controlBall.svelte";
     import Peer from "peerjs";
 
-    let showOverlaySettings = true;
-    let p2pid = localStorage["p2pid"] ?? "";
-    let conn: any = null;
-    let errorMessage = "";
-    let statusMessage = "";
-    let successMessage = "";
+    let showOverlaySettings = $state(true);
+    let p2pid = $state(localStorage["p2pid"] ?? "");
+    let conn: any = $state(null);
+    let errorMessage = $state("");
+    let statusMessage = $state("");
+    let successMessage = $state("");
     let peer = new Peer({ debug: 3 });
 
-    const scoreboardHistory = [];
-    const statsHistory = [];
+    const scoreboardHistory: any = [];
+    const statsHistory: any = [];
 
     const emptyPlayer = {
         name: "",
@@ -51,19 +53,17 @@
     }
 
     let scoreboardInfoStr = localStorage["scoreboardInfo"] ?? JSON.stringify(structuredClone(emptyScoreboard));
-    let scoreboardInfo = JSON.parse(scoreboardInfoStr);
+    let scoreboardInfo: typeof emptyScoreboard = $state(JSON.parse(scoreboardInfoStr));
 
     let calculatedStatsStr = localStorage["calculatedStats"] ?? JSON.stringify(structuredClone(emptyStats));
-    let calculatedStats = JSON.parse(calculatedStatsStr);
+    let calculatedStats = $state(JSON.parse(calculatedStatsStr));
 
     let lastEndOfBreak = Date.now();
 
-    let paused = false;
+    let paused = $state(false);
 
     // Enables a special mode -- a secondary menu of sorts.
-    let shift = false;
-
-    console.log(scoreboardInfo);
+    let shift = $state(false);
 
     const connectToPeer = () => {
         errorMessage = "";
@@ -121,8 +121,8 @@
         shift = false;
     }
 
-    let foulMode = false;
-    let snookerMode = false;
+    let foulMode = $state(false);
+    let snookerMode = $state(false);
 
     const handleShift = () => {
         if (paused) { return; }
@@ -184,7 +184,6 @@
                     scoreboardInfo.onColourAfterRed = false;
                 }
             }
-            console.log(calculatedStats.remainingBalls);
             scoreboardInfo.player[scoreboardInfo.activeTurn].currentBreak.push(value);
             scoreboardInfo.player[scoreboardInfo.activeTurn].currentScore += value;
         }
@@ -215,7 +214,7 @@
         shift = false;
     }
 
-    let showStatLength = 0;
+    let showStatLength = $state(0);
     let showStatTimer: any;
 
     const handleToggleStat = () => {
@@ -225,7 +224,7 @@
         scoreboardInfo = scoreboardInfo;
     }
 
-    let selectedStat = "";
+    let selectedStat = $state("");
 
     function refreshStats() {
         scoreboardInfo.stat.data = getStatData();
@@ -320,15 +319,16 @@
         paused = !paused;
     }
 
-    $: {
+    $effect(() => {
+        console.log("UPDATE")
         localStorage["scoreboardInfo"] = JSON.stringify(scoreboardInfo);
         localStorage["calculatedStats"] = JSON.stringify(calculatedStats);
         if (conn !== null && conn.open) {
             conn.send(scoreboardInfo);
         }
-        scoreboardHistory.push(structuredClone(scoreboardInfo));
-        statsHistory.push(structuredClone(calculatedStats));
-    }
+        scoreboardHistory.push($state.snapshot(scoreboardInfo));
+        statsHistory.push($state.snapshot(calculatedStats));
+    }) 
 
     onMount(() => {
         scoreboardInfo.stat.visible = false;
@@ -347,32 +347,32 @@
     <div class="flex flex-col items-center space-y-5">
         <div class="grid grid-cols-3 gap-4 font-medium { paused ? 'opacity-50' : '' }">
             {#if shift}
-                <button on:click={ () => { handleBall(0) } } class="col-span-1 active:opacity-50 { foulMode ? 'opacity-20' : '' } flex justify-center"><ControlBall value={0}></ControlBall></button>
+                <button onclick={() => { handleBall(0) }} class="col-span-1 active:opacity-50 { foulMode ? 'opacity-20' : '' } flex justify-center"><ControlBall value={0}></ControlBall></button>
             {/if}
-            <button on:click={ () => { handleBall(1) } } class="{shift ? 'col-span-1' : 'col-span-3'} active:opacity-50 { foulMode ? 'opacity-20' : '' } flex justify-center"><ControlBall value={!shift ? 1 : 9}></ControlBall></button>
+            <button onclick={() => { handleBall(1) }} class="{shift ? 'col-span-1' : 'col-span-3'} active:opacity-50 { foulMode ? 'opacity-20' : '' } flex justify-center"><ControlBall value={!shift ? 1 : 9}></ControlBall></button>
             {#if shift}
                 <div class="col-span-1"></div> <!--padding-->
             {/if}
-            <button on:click={ () => { handleBall(2) } } class="col-span-1 active:opacity-50 { foulMode ? 'opacity-20' : '' } justify-center"><ControlBall value={!shift ? 2 : 10}></ControlBall></button>
-            <button on:click={ () => { handleBall(3) } } class="col-span-1 active:opacity-50 { foulMode ? 'opacity-20' : '' } justify-center"><ControlBall value={!shift ? 3 : 11}></ControlBall></button>
-            <button on:click={ () => { handleBall(4) } } class="col-span-1 active:opacity-50 { foulMode ? 'brightness-[80%]' : '' }  { snookerMode ? 'brightness-[60%]' : ''} justify-center"><ControlBall value={!shift ? 4 : 12}></ControlBall></button>
-            <button on:click={ () => { handleBall(5) } } class="col-span-1 active:opacity-50 { foulMode ? 'brightness-[80%]' : '' }  { snookerMode ? 'brightness-[60%]' : ''} justify-center"><ControlBall value={!shift ? 5 : 13}></ControlBall></button>
-            <button on:click={ () => { handleBall(6) } } class="col-span-1 active:opacity-50 { foulMode ? 'brightness-[80%]' : '' }  { snookerMode ? 'brightness-[60%]' : ''} justify-center"><ControlBall value={!shift ? 6 : 14}></ControlBall></button>
-            <button on:click={ () => { handleBall(7) } } class="col-span-1 active:opacity-50 { foulMode ? 'brightness-[80%]' : '' }  { snookerMode ? 'brightness-[60%]' : ''} justify-center"><ControlBall value={!shift ? 7 : 15}></ControlBall></button>
+            <button onclick={() => { handleBall(2) }} class="col-span-1 active:opacity-50 { foulMode ? 'opacity-20' : '' } justify-center"><ControlBall value={!shift ? 2 : 10}></ControlBall></button>
+            <button onclick={() => { handleBall(3) }} class="col-span-1 active:opacity-50 { foulMode ? 'opacity-20' : '' } justify-center"><ControlBall value={!shift ? 3 : 11}></ControlBall></button>
+            <button onclick={() => { handleBall(4) }} class="col-span-1 active:opacity-50 { foulMode ? 'brightness-[80%]' : '' }  { snookerMode ? 'brightness-[60%]' : ''} justify-center"><ControlBall value={!shift ? 4 : 12}></ControlBall></button>
+            <button onclick={() => { handleBall(5) }} class="col-span-1 active:opacity-50 { foulMode ? 'brightness-[80%]' : '' }  { snookerMode ? 'brightness-[60%]' : ''} justify-center"><ControlBall value={!shift ? 5 : 13}></ControlBall></button>
+            <button onclick={() => { handleBall(6) }} class="col-span-1 active:opacity-50 { foulMode ? 'brightness-[80%]' : '' }  { snookerMode ? 'brightness-[60%]' : ''} justify-center"><ControlBall value={!shift ? 6 : 14}></ControlBall></button>
+            <button onclick={() => { handleBall(7) }} class="col-span-1 active:opacity-50 { foulMode ? 'brightness-[80%]' : '' }  { snookerMode ? 'brightness-[60%]' : ''} justify-center"><ControlBall value={!shift ? 7 : 15}></ControlBall></button>
         </div>
         {#if !shift}
             <div class="grid grid-cols-4 gap-3 text-2xl { paused ? 'opacity-50' : '' }">
-                <button on:click={ handleShift } class="w-18 active:opacity-50 p-2 col-span-1 blue-gradient">Shift</button>
-                <button on:click={ handleFoul } class="w-18 active:opacity-50 { foulMode ? 'saturate-50' : ''} p-2 col-span-1 blue-gradient">{ snookerMode ? 'Snoo.' : 'Foul'}</button>
-                <button on:click={ handleEsc } class="w-18 active:opacity-50 p-2 col-span-1 blue-gradient">Undo</button>
-                <button on:click={ handleEnter } class="w-18 active:opacity-50 p-2 col-span-1 blue-gradient">Enter</button>
+                <button onclick={handleShift} class="w-18 active:opacity-50 p-2 col-span-1 blue-gradient">Shift</button>
+                <button onclick={handleFoul} class="w-18 active:opacity-50 { foulMode ? 'saturate-50' : ''} p-2 col-span-1 blue-gradient">{ snookerMode ? 'Snoo.' : 'Foul'}</button>
+                <button onclick={handleEsc} class="w-18 active:opacity-50 p-2 col-span-1 blue-gradient">Undo</button>
+                <button onclick={handleEnter} class="w-18 active:opacity-50 p-2 col-span-1 blue-gradient">Enter</button>
             </div>
         {:else}
             <div class="grid grid-cols-4 gap-3 text-2xl { paused ? 'opacity-50' : '' }">
-                <button on:click={ handleShift } class="w-18 active:opacity-50 p-2 col-span-1 brightness-125 blue-gradient">Shift</button>
-                <button on:click={ handleGame } class="w-18 active:opacity-50 p-2 col-span-1 blue-gradient">Game</button>
-                <button on:click={ handleSafety } class="w-18 active:opacity-50 p-2 col-span-1 blue-gradient">Safe</button>
-                <button on:click={ handleUnsafe } class="w-18 active:opacity-50 p-2 col-span-1 blue-gradient">Unsafe</button>
+                <button onclick={handleShift} class="w-18 active:opacity-50 p-2 col-span-1 brightness-125 blue-gradient">Shift</button>
+                <button onclick={handleGame} class="w-18 active:opacity-50 p-2 col-span-1 blue-gradient">Game</button>
+                <button onclick={handleSafety} class="w-18 active:opacity-50 p-2 col-span-1 blue-gradient">Safe</button>
+                <button onclick={handleUnsafe} class="w-18 active:opacity-50 p-2 col-span-1 blue-gradient">Unsafe</button>
             </div>
         {/if}
         <select bind:value={ selectedStat } class="mx-4 border-2 border-white bg-transparent w-5/6 text-center flex justify-center p-2 text-xl">
@@ -386,16 +386,16 @@
             <option value="fc" >Fouls committed</option>
         </select>
         <div class="flex items-center text-xl gap-x-2">
-            <button on:click={ handleToggleStat } class="w-18 active:opacity-50 { scoreboardInfo.stat.visible ? 'saturate-50' : '' } p-2 orange-gradient text-xl">Tog. { scoreboardInfo.stat.visible ? 'off' : 'on'}</button>
+            <button onclick={handleToggleStat} class="w-18 active:opacity-50 { scoreboardInfo.stat.visible ? 'saturate-50' : '' } p-2 orange-gradient text-xl">Tog. { scoreboardInfo.stat.visible ? 'off' : 'on'}</button>
             or
-            <button on:click={ () => { handleShowStat(showStatLength) } } class="w-18 active:opacity-50 p-2 green-gradient text-xl">Show</button>
+            <button onclick={() => { handleShowStat(showStatLength) }} class="w-18 active:opacity-50 p-2 green-gradient text-xl">Show</button>
             for
             <input bind:value={ showStatLength } type="number" pattern="[0-9]*" class="w-12 border-2 border-white bg-transparent text-center flex justify-center p-2 text-xl">
             seconds
         </div>
         <div class="flex justify-between w-full px-5">
-            <button on:click={ handlePause } class="w-18 active:opacity-50 p-2 rose-gradient { paused ? 'saturate-50' : '' } text-xl">{ paused ? 'Unp' : 'P'}ause match</button>
-            <button on:click={() => { showOverlaySettings = true; }} class="w-18 active:opacity-50 p-2 purple-gradient text-xl">Overlay settings</button>
+            <button onclick={handlePause} class="w-18 active:opacity-50 p-2 rose-gradient { paused ? 'saturate-50' : '' } text-xl">{ paused ? 'Unp' : 'P'}ause match</button>
+            <button onclick={() => { showOverlaySettings = true; }} class="w-18 active:opacity-50 p-2 purple-gradient text-xl">Overlay settings</button>
         </div>
     </div>
 </div>
@@ -407,7 +407,7 @@
             <input bind:value={ p2pid } type="text" class="w-[90%] p-2 text-2xl bg-transparent border-2 border-black" />
         </div>
         <div class="w-full flex justify-end">
-            <button on:click={ connectToPeer } class="p-2 purple-gradient text-2xl text-white active:opacity-50">Connect</button>
+            <button onclick={connectToPeer} class="p-2 purple-gradient text-2xl text-white active:opacity-50">Connect</button>
         </div>
         <span class="text-red-400 font-light text-xl">{ errorMessage }</span>
         <span class="text-gray-600 font-light text-xl">{ statusMessage }</span>
@@ -429,8 +429,8 @@
         </div>
         <br>
         <div class="w-full flex justify-end gap-x-3">
-            <button on:click={ resetAll } class="p-2 orange-gradient text-2xl text-white active:opacity-50">Reset all</button>
-            <button on:click={ saveMatchDetails } class="p-2 blue-gradient text-2xl text-white active:opacity-50">Close</button>
+            <button onclick={resetAll} class="p-2 orange-gradient text-2xl text-white active:opacity-50">Reset all</button>
+            <button onclick={saveMatchDetails} class="p-2 blue-gradient text-2xl text-white active:opacity-50">Close</button>
         </div>
     </div>
 </div>

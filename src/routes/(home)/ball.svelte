@@ -1,6 +1,10 @@
 <script lang="ts">
     import { fly } from "svelte/transition";
-    export let ballInfo: BallInfo;
+    interface Props {
+        ballInfo: BallInfo;
+    }
+
+    let { ballInfo }: Props = $props();
 </script>
 
 <a transition:fly={{ duration: 1000, delay: ballInfo.delay, y: 100 }}  class="my-5 transition-opacity ease-in-out flex flex-col items-center cursor-pointer lg:hover:opacity-80 active:opacity-80 lg:active:opacity-60" href={ballInfo.linkTo}>

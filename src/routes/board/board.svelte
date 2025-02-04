@@ -5,13 +5,23 @@
     import { showAll } from "$lib/stores";
     import BoardDate from "./boardDate.svelte";
     
-    export let loggedIn: boolean;
-    export let breakInfo: BreakInfo;
-    export let currentMonth: string;
-    export let annualBreakInfo: BreakInfo;
-    export let currentYear: string;
+    interface Props {
+        loggedIn: boolean;
+        breakInfo: BreakInfo;
+        currentMonth: string;
+        annualBreakInfo: BreakInfo;
+        currentYear: string;
+    }
 
-    let showAllValue: boolean;
+    let {
+        loggedIn,
+        breakInfo,
+        currentMonth,
+        annualBreakInfo,
+        currentYear
+    }: Props = $props();
+
+    let showAllValue: boolean = $state(false);
     let selectMonth: false;
 
     showAll.subscribe(v => showAllValue = v)
@@ -30,7 +40,7 @@
                 <a href="#form" class="text-[#9E9E9E] border-2 border-[#9E9E9E] py-1 px-3">
                     <BoardText text="New break?"></BoardText>
                 </a>
-                <button type="button" class="text-[#879997] border-2 border-[#879997] py-1 px-3" on:click={() => { showAll.update(x => !x) }}>
+                <button type="button" class="text-[#879997] border-2 border-[#879997] py-1 px-3" onclick={() => { showAll.update(x => !x) }}>
                     {#if showAllValue}
                     <BoardText text="Hide all"></BoardText>
                     {:else}

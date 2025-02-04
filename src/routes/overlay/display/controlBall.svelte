@@ -1,6 +1,10 @@
 <script lang="ts">
-    export let value: number;
-    export let count: number;
+    interface Props {
+        value: number;
+        count: number;
+    }
+
+    let { value, count }: Props = $props();
 
     const textColorMapping = ["text-unverified-grey", "text-red-ball", "text-yellow-ball", "text-green-ball", "text-brown-ball", "text-blue-ball", "text-pink-ball", "text-black-ball"]
     const borderColorMapping = ["border-unverified-grey", "border-red-ball", "border-yellow-ball", "border-green-ball", "border-brown-ball", "border-blue-ball", "border-pink-ball", "border-black-ball"]

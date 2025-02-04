@@ -5,9 +5,9 @@
     import { supabase } from "$lib/supabaseClient";
     import { onMount } from "svelte";
 
-    let email: string;
-    let password: string;
-    let errorMessage = "";
+    let email: string = $state();
+    let password: string = $state();
+    let errorMessage = $state("");
 
     async function signInHandler() {
         const { data, error } = await supabase.auth.signInWithPassword({
@@ -36,7 +36,7 @@
     <img src={ phoenixImg } alt="Phoenix logo" class="lg:size-1/4 lg:inline-block lg:rounded-full hidden" />
     <div class="flex flex-col items-center lg:items-baseline lg:mt-10 lg:justify-around mb-24 px-30 lg:w-1/2">
         <p class="font-medium text-2xl">Enter details...</p>
-        <form class="mt-5 w-2/3 lg:w-full" on:submit={ signInHandler }>
+        <form class="mt-5 w-2/3 lg:w-full" onsubmit={signInHandler}>
             <div class="lg:flex lg:flex-row lg:gap-x-10">
                 <div class="lg:w-1/3">
                     <p class="font-light text-xl lg:w-full">Email</p>

@@ -3,8 +3,13 @@
     import Ball from "./ball.svelte"
     import { onMount } from "svelte";
     import { fly } from "svelte/transition";
+    interface Props {
+        children?: import('svelte').Snippet;
+    }
 
-    let showTitle: boolean = false
+    let { children }: Props = $props();
+
+    let showTitle: boolean = $state(false)
 
     onMount(async () => {
         showTitle = true
@@ -34,7 +39,7 @@
                 <p transition:fly={{ duration: 1000, y: 50 }} class="mt-3 text-2xl lg:text-5xl font-serif italic font-light">Resurrexit a flamis</p>
             {/if}
         </div>
-        <slot />
+        {@render children?.()}
     </div>
 
     {#if showTitle}

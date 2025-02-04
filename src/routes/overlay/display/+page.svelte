@@ -1,13 +1,15 @@
 <script lang="ts">
+    import { run, preventDefault } from 'svelte/legacy';
+
     import { browser } from "$app/environment";
     import ControlBall from "./controlBall.svelte";
     import Peer from "peerjs";
 
     const PIN_MAX_LEN = 10;
 
-    let p2pid = ""; 
-    let showConnectionPane = true; 
-    let connectedRemotes = 0;
+    let p2pid = $state(""); 
+    let showConnectionPane = $state(true); 
+    let connectedRemotes = $state(0);
     let peer: Peer;
     if (browser) {
         p2pid = localStorage["p2pid"] ?? "";
@@ -53,7 +55,7 @@
         }
     }
 
-    let scoreboardInfo = structuredClone(emptyScoreboard);
+    let scoreboardInfo = $state(structuredClone(emptyScoreboard));
 
     if (p2pid === "") {
         peer = new Peer(Math.random().toString(36).slice(2, PIN_MAX_LEN), { debug: 3 });
@@ -82,12 +84,14 @@
         })
     }
 
-    $: console.log(scoreboardInfo);
+    run(() => {
+        console.log(scoreboardInfo);
+    });
 
     bindPeer();
 </script>
 
-<svelte:window on:keydown|preventDefault={ handleKeypress }></svelte:window>
+<svelte:window onkeydown={preventDefault(handleKeypress)}></svelte:window>
 
 <div class="text-white text-2xl font-light h-14 flex items-center justify-center relative">
     <div class="w-full flex items-center h-full z-5">
