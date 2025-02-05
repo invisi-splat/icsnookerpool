@@ -4,6 +4,9 @@ import { SUPABASE_PROJECT_URL, SUPABASE_SERVICE_ROLE_KEY } from '$env/static/pri
 import update_rating from '../update_rating/update_rating';
 import { json } from '@sveltejs/kit';
 
+// ONLY USE THIS ROUTE IN EMERGENCIES
+
+/*
 export const POST: RequestHandler = async _0 => {
   const supabase = createClient(SUPABASE_PROJECT_URL, SUPABASE_SERVICE_ROLE_KEY);
 
@@ -24,3 +27,4 @@ export const POST: RequestHandler = async _0 => {
 
   return json({})
 }
+*/

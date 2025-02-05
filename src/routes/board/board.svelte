@@ -37,7 +37,7 @@
                 </div>
             </div>
             <div class="flex justify-evenly gap-5 flex-wrap lg:hidden mt-5">
-                <a href="#form" class="text-[#9E9E9E] border-2 border-[#9E9E9E] py-1 px-3">
+                <a href="#form" class="text-[#9e9e9e] border-2 border-[#9e9e9e] py-1 px-3" aria-label="New break?">
                     <BoardText text="New break?"></BoardText>
                 </a>
                 <button type="button" class="text-[#879997] border-2 border-[#879997] py-1 px-3" onclick={() => { showAll.update(x => !x) }}>
@@ -47,6 +47,9 @@
                     <BoardText text="Show all"></BoardText>
                     {/if}
                 </button>
+                <a href="/board/stats" class="text-[#e6d897] border-2 border-[#e6d897] py-1 px-3" aria-label="Stats">
+                    <BoardText text="All-time stats"></BoardText>
+                </a>
                 {#if loggedIn}
                     <a href="/board/review" class="text-[#889987] border-[#889987] border-2 py-1 px-3">
                         <BoardText text="Review breaks"></BoardText>

@@ -127,6 +127,7 @@
       </div>
     </div>
   </div>
+  <a href="/board/stats" class="underline active:opacity-20 font-light my-10">Back to all-time stats</a>
 </div>
 
 <style>

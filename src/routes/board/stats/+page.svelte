@@ -12,7 +12,10 @@
 
 <div class="flex flex-col items-center gap-3 my-5 mx-2 text-white">
   <h1 class="font-bold text-3xl">IC Break Board Stats</h1>
-  <a href="#calculation-explanation" class="underline font-light italic">(How is this calculated?)</a>
+  <div class="flex flex-col items-center">
+    <a href="#calculation-explanation" class="underline font-light italic">(How is this calculated?)</a>
+    <a href="/board" class="underline font-light italic">(Get me back to the break board!)</a>
+  </div>
   <div class="flex flex-col sm:grid sm:grid-cols-2 gap-x-32 items-center">
     <div class="sm:col-span-1 grid-cols-7 grid gap-x-3 gap-y-2 text-lg text-gray-300 bg-slate-900 bg-opacity-15 py-3 px-5 mb-10">
       <p class="col-span-1"></p>
@@ -40,6 +43,7 @@
     </div>
     <div class="flex flex-col sm:col-span-1 items-center">
       <h1 id="calculation-explanation" class="text-xl font-bold">How is this calculated?</h1>
+      <p class="p-3"><span class="font-bold">TL;DR: To increase your rating, submit a lot of breaks. To increase your rating even more, make sure those breaks are big!</span></p>
       <p class="p-3">A rating is calculated for each person by computing a weighted sum of all of that person's breaks. The formula is
       {`$$\\mathrm{Rating}=\\sum_{i=0}^{n}{b_i\\cdot 0.9^{i}}$$`}
       where $n$ is the total number of breaks made and $b_i$ is the $(i + 1)$th highest break made.<br />
@@ -55,7 +59,7 @@
         <li>- But if you've submitted a lot of very high breaks, that should have more of an influence</li>
         <li>- This is also a system in use in <a href="https://osu.ppy.sh/wiki/en/Performance_points#weightage-system" class="underline text-blue-400">other areas</a></li>
       </ul>
-      <p class="p-3 w-full">Ultimately, the number is fairly arbitrary.</p>
+      <p class="p-3 w-full">Ultimately, the number is fairly arbitrary, but it gives a somewhat objective indication of the player's ability.</p>
     </div>
   </div>
 
