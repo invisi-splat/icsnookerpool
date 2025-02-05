@@ -21,7 +21,6 @@
       Chart.defaults.color = "#d9d9d9";
       Chart.defaults.plugins.legend.display = false;
       if (width > 640) {
-        console.log("???")
         Chart.defaults.font.size = 16;
         Chart.defaults.aspectRatio = 3;
       } else {
@@ -81,7 +80,7 @@
 </script>
 
 <div class="w-full flex flex-col justify-center items-center px-5 py-2 text-almost-white">
-  <p class="sm:text-3xl text-2xl mb-5">{ data.userInfo.given_name } { data.userInfo.last_name } <span class="font-bold text-white">{ "(#1)" }</span></p>
+  <p class="sm:text-3xl text-2xl mb-5">{ data.userInfo.given_name } { data.userInfo.last_name } <span class="font-bold text-white"><span>(#</span>{ data.ranking })</p>
   <div class="sm:hidden grid grid-cols-4 w-3/4 mb-5">
     <p class="col-span-3">Highest break</p>
     <p class="col-span-1 justify-end font-bold">{ maximumBreak.break }</p>
@@ -90,7 +89,7 @@
     <p class="col-span-3">Total submitted breaks</p>
     <p class="col-span-1 justify-end font-bold">{ data.breakInfo.length }</p>
     <p class="col-span-3 text-white font-bold">Weighted rating</p>
-    <p class="col-span-1 text-white justify-end font-bold">204</p>
+    <p class="col-span-1 text-white justify-end font-bold">{ data.rating?.toPrecision(5) }</p>
   </div>
   <div class="sm:w-3/4 w-full flex justify-center">
     <canvas use:breakChart></canvas>
@@ -124,7 +123,7 @@
         <p class="col-span-3 text-xl">Total submitted breaks</p>
         <p class="col-span-1 text-xl justify-end font-bold">{ data.breakInfo.length }</p>
         <p class="col-span-3 text-xl text-white font-bold">Weighted rating</p>
-        <p class="col-span-1 text-xl text-white justify-end font-bold">204</p>
+        <p class="col-span-1 text-xl text-white justify-end font-bold">{ data.rating?.toPrecision(5) }</p>
       </div>
     </div>
   </div>
