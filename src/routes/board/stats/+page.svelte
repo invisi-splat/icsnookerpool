@@ -10,6 +10,10 @@
 
 </script>
 
+<svelte:head>
+    <title>Break board stats | IC Snooker & Pool</title> 
+</svelte:head>
+
 <div class="flex flex-col items-center gap-3 my-5 mx-2 text-white">
   <h1 class="font-bold text-3xl">IC Break Board Stats</h1>
   <div class="flex flex-col items-center">

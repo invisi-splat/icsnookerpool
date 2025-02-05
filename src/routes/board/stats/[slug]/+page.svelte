@@ -79,6 +79,10 @@
 
 </script>
 
+<svelte:head>
+    <title>{ data.userInfo.given_name } { data.userInfo.last_name } | IC Snooker & Pool</title> 
+</svelte:head>
+
 <div class="w-full flex flex-col justify-center items-center px-5 py-2 text-almost-white">
   <p class="sm:text-3xl text-2xl mb-5">{ data.userInfo.given_name } { data.userInfo.last_name } <span class="font-bold text-white"><span>(#</span>{ data.ranking })</p>
   <div class="sm:hidden grid grid-cols-4 w-3/4 mb-5">
