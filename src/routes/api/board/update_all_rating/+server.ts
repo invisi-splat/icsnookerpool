@@ -1,0 +1,21 @@
+import type { RequestHandler } from './$types';
+import { createClient } from '@supabase/supabase-js'
+import { SUPABASE_PROJECT_URL, SUPABASE_SERVICE_ROLE_KEY } from '$env/static/private';
+import update_rating from '../update_rating/update_rating';
+import { json } from '@sveltejs/kit';
+
+export const POST: RequestHandler = async _0 => {
+  const supabase = createClient(SUPABASE_PROJECT_URL, SUPABASE_SERVICE_ROLE_KEY);
+
+  const allUsers = await supabase
+    .from("users")
+    .select("user_id")
+  
+  if (allUsers.error) throw allUsers.error;
+
+  for (const user of allUsers.data) {
+    update_rating(user.user_id as string)
+  }
+
+  return json({})
+}

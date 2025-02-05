@@ -77,7 +77,22 @@
                 throw error2;
             }
         }
+        updateRating();
         processedBreak[index] = true;
+    }
+
+    async function updateRating() {
+        const response = await fetch('/api/board/update_rating', {
+            method: 'POST',
+            body: JSON.stringify({}),
+            headers: {
+                'content-type': 'application/json',
+            },
+        });
+
+        const { code, message } = await response.json();
+
+        if (code !== 0) { throw "bruh" }
     }
 
     async function handleReject(sBreak: BreakEntry, index: number) {

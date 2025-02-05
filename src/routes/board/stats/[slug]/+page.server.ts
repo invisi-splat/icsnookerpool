@@ -3,11 +3,13 @@ import { error } from "@sveltejs/kit";
 import type { PageServerLoad } from "../../$types";
 
 export const load: PageServerLoad = async ({ params }) => {
+  //@ts-expect-error slug is broken?
+  const user_id = params.slug;
+
   const breakInfo = await supabase
     .from("breaks")
     .select()
-    //@ts-expect-error slug is broken?
-    .eq("player", params.slug)
+    .eq("player", user_id)
     .order("submitted", { ascending: false })  
 
   if (breakInfo.error) {
@@ -29,10 +31,20 @@ export const load: PageServerLoad = async ({ params }) => {
   const userInfo = await supabase
     .from("users")
     .select()
-    //@ts-expect-error similar to above
-    .eq("user_id", params.slug)
+    .eq("user_id", user_id)
 
   if (userInfo.error) throw userInfo.error;
+
+  const ratingInfo = await supabase
+    .from("break_rating")
+    .select()
+    .order("rating", { ascending: false })
   
-  return { breakInfo: breakInfo.data, userInfo: userInfo.data[0] }
+  if (ratingInfo.error) throw ratingInfo.error;
+
+  const ratingInfoData: Rating[] = ratingInfo.data
+  const ranking = ratingInfoData.findIndex(e => e.user_id === user_id) + 1
+  const rating = ratingInfoData.find(e => e.user_id === user_id)?.rating
+  
+  return { breakInfo: breakInfo.data, userInfo: userInfo.data[0], ranking, rating }
 }

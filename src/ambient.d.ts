@@ -51,3 +51,8 @@ type UserInfo = {
     status: "alumnus" | "student",
     type: "admin" | "user"
 }
+
+type Rating = {
+    user_id: string,
+    rating: number
+}
