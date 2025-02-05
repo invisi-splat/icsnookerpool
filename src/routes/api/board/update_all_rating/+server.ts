@@ -7,6 +7,11 @@ import { json } from '@sveltejs/kit';
 export const POST: RequestHandler = async _0 => {
   const supabase = createClient(SUPABASE_PROJECT_URL, SUPABASE_SERVICE_ROLE_KEY);
 
+  await supabase
+    .from("break_rating")
+    .delete()
+    .neq("user_id", "")
+
   const allUsers = await supabase
     .from("users")
     .select("user_id")
