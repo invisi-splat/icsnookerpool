@@ -41,6 +41,7 @@
                     Show all breaks
                 {/if}
             </button>
+            <a class="blue-button mt-5 py-2 px-4 text-xl" href="/board/stats">All-time stats</a>
             {#if loggedIn}
                 <a class="green-button mt-5 py-2 px-4 text-xl" href="/board/review">Review breaks</a>
             {/if}
@@ -68,6 +69,10 @@
 
     .green-button {
         background: linear-gradient(90deg, #55B509 0%, #77BA43 61.45%);
+    }
+
+    .blue-button {
+        background: linear-gradient(90deg, rgb(61, 176, 234) 0%, #44cabf 61.45%);
     }
 
     .home-button {
