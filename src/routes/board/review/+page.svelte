@@ -77,14 +77,16 @@
                 throw error2;
             }
         }
-        updateRating();
+        updateRating(sBreak.player.user_id);
         processedBreak[index] = true;
     }
 
-    async function updateRating() {
+    async function updateRating(id: string) {
         const response = await fetch('/api/board/update_rating', {
             method: 'POST',
-            body: JSON.stringify({}),
+            body: JSON.stringify({
+                user_id: id
+            }),
             headers: {
                 'content-type': 'application/json',
             },
